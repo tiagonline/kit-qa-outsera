@@ -1,4 +1,4 @@
-# playwright-clean-architecture
+# kit-qa-outsera
 
 [![E2E Tests](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/e2e-tests.yml)
 
