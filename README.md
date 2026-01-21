@@ -1,5 +1,6 @@
 # Kit QA Outsera - Desafio Técnico
 
+[![Kit QA Outsera - All Tests](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/main_pipeline.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/main_pipeline.yml)
 ![CI Status](https://github.com/SEU_USUARIO/kit-qa-outsera/actions/workflows/main_pipeline.yml/badge.svg)
 ![Playwright](https://img.shields.io/badge/Playwright-1.40+-green?logo=playwright&logoColor=white)
 ![K6](https://img.shields.io/badge/K6-Performance-purple?logo=k6&logoColor=white)
