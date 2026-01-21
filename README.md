@@ -1,4 +1,4 @@
-# Kit QA Outsera - Desafio Técnico
+# Kit QA Outsera
 
 [![Kit QA Outsera - All Tests](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/main_pipeline.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/main_pipeline.yml)
 ![CI Status](https://github.com/SEU_USUARIO/kit-qa-outsera/actions/workflows/main_pipeline.yml/badge.svg)
