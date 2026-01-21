@@ -9,7 +9,8 @@ dotenv.config();
 test.describe.configure({ mode: "serial" });
 
 test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
-  const BASE_URL = "https://gorest.co.in/public/v2";
+  // Se você não colocou API_BASE_URL no .env, usamos a string direta como fallback
+  const API_BASE_URL = process.env.API_BASE_URL || 'https://gorest.co.in/public/v2';
   const TOKEN = process.env.GOREST_TOKEN;
 
   if (!TOKEN) {
@@ -40,7 +41,7 @@ test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
     }) => {
       console.log(`[INFO] Criando usuário: ${fakeName} | ${uniqueEmail}`);
 
-      const response = await request.post(`${BASE_URL}/users`, {
+      const response = await request.post(`${API_BASE_URL}/users`, {
         headers: headers,
         data: {
           name: fakeName,
@@ -72,7 +73,7 @@ test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
     }) => {
       test.skip(!userId, "Pulei o teste porque a criação anterior falhou");
 
-      const response = await request.get(`${BASE_URL}/users/${userId}`, {
+      const response = await request.get(`${API_BASE_URL}/users/${userId}`, {
         headers,
       });
       expect(response.status()).toBe(200);
@@ -89,7 +90,7 @@ test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
       // Gero um novo status aleatório apenas para variar
       const newStatus = "inactive";
 
-      const response = await request.put(`${BASE_URL}/users/${userId}`, {
+      const response = await request.put(`${API_BASE_URL}/users/${userId}`, {
         headers,
         data: { status: newStatus },
       });
@@ -101,7 +102,7 @@ test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
     test("DELETE /users/{id} - Remover usuário", async ({ request }) => {
       test.skip(!userId, "Pulei o teste porque a criação anterior falhou");
 
-      const response = await request.delete(`${BASE_URL}/users/${userId}`, {
+      const response = await request.delete(`${API_BASE_URL}/users/${userId}`, {
         headers,
       });
       expect(response.status()).toBe(204);
@@ -115,7 +116,7 @@ test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
     test("POST /users - Falha por Campos Ausentes (422)", async ({
       request,
     }) => {
-      const response = await request.post(`${BASE_URL}/users`, {
+      const response = await request.post(`${API_BASE_URL}/users`, {
         headers,
         data: {
           name: faker.person.fullName(), // Nome válido
@@ -132,7 +133,7 @@ test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
     });
 
     test("GET /users - Falha de Autenticação (401)", async ({ request }) => {
-      const response = await request.get(`${BASE_URL}/users`, {
+      const response = await request.get(`${API_BASE_URL}/users`, {
         headers: {
           Authorization: "Bearer token_invalido_123",
           "Content-Type": "application/json",
@@ -144,7 +145,7 @@ test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
     test("GET /users/{id} - Falha por ID Inexistente (404)", async ({
       request,
     }) => {
-      const response = await request.get(`${BASE_URL}/users/99999999`, {
+      const response = await request.get(`${API_BASE_URL}/users/99999999`, {
         headers,
       });
       expect(response.status()).toBe(404);
@@ -153,7 +154,7 @@ test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
     test("POST /users - Falha por Payload JSON quebrado (Bad Request)", async ({
       request,
     }) => {
-      const response = await request.post(`${BASE_URL}/users`, {
+      const response = await request.post(`${API_BASE_URL}/users`, {
         headers,
         data: "isso não é um json",
       });

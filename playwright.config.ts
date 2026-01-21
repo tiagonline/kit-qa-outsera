@@ -1,4 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export default defineConfig({
   testDir: "./tests",
@@ -6,26 +9,35 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: "html",
+  
+  reporter: [
+    ['html', { open: 'never' }],
+    ['list']
+  ],
 
   use: {
     headless: true,
+    // Esta baseURL serve como "Padrão" para testes de UI (Web/Mobile).
+    // Assim, nos testes visuais fiz apenas page.goto('/').
+    // Nos testes de API, nós sobrescrevemos isso usando a URL completa do GoRest.
     baseURL: "https://www.saucedemo.com/",
+    
     video: "on",
     trace: "on",
     screenshot: "only-on-failure",
   },
 
-  projects: [
+projects: [
     {
       name: "chromium",
-      use: {
-        ...devices["Desktop Chrome"],
-        // Pra funcionar no WSL do Windows
-        launchOptions: {
-          args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"],
-        },
-      },
+      use: { ...devices["Desktop Chrome"] },
+      // Ignora os testes mobile (assim não roda duplicado nem tenta rodar mobile em desktop)
+      testIgnore: '**/mobile/**', 
+    },
+    {
+      name: "Mobile Chrome",
+      use: { ...devices["Pixel 5"] },
+      testMatch: '**/mobile/*.spec.ts',
     },
   ],
 });
