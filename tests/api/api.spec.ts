@@ -1,8 +1,12 @@
 import { test, expect } from '@playwright/test';
 import * as dotenv from 'dotenv';
+import { fakerPT_BR as faker } from '@faker-js/faker';
 
-// Configuração segura de variáveis
+// Configurei o carregamento seguro das variáveis de ambiente
 dotenv.config();
+
+// Configurei o modo serial para garantir a ordem de execução (POST -> GET -> DELETE)
+test.describe.configure({ mode: 'serial' });
 
 test.describe('API Tests - GoRest (Testes Positivos e Negativos)', () => {
   const BASE_URL = 'https://gorest.co.in/public/v2';
@@ -18,7 +22,12 @@ test.describe('API Tests - GoRest (Testes Positivos e Negativos)', () => {
   };
 
   let userId: number;
-  const randomEmail = `tiago.qa.${Date.now()}@outsera-challenge.test`;
+  
+  // Massa de Dados Dinâmica para o Teste
+  const fakeName = faker.person.fullName();
+  const fakeEmail = faker.internet.email({ firstName: fakeName.split(' ')[0] }).toLowerCase(); 
+  // GoRest valida emails, então adicionei timestamp pra garantir:
+  const uniqueEmail = `${Date.now()}_${fakeEmail}`;
 
   // ==========================================
   // CENÁRIOS POSITIVOS
@@ -26,51 +35,65 @@ test.describe('API Tests - GoRest (Testes Positivos e Negativos)', () => {
   test.describe('Fluxo Principal (CRUD)', () => {
     
     test('POST /users - Criar usuário com dados válidos', async ({ request }) => {
+      console.log(`[INFO] Criando usuário: ${fakeName} | ${uniqueEmail}`);
+
       const response = await request.post(`${BASE_URL}/users`, {
         headers: headers,
         data: {
-          name: "Jose Maria",
+          name: fakeName,
           gender: "male",
-          email: randomEmail,
+          email: uniqueEmail,
           status: "active"
         }
       });
 
       expect(response.status()).toBe(201);
       
-      // Valida Headers
+      // Valido os Headers obrigatórios
       const resHeaders = response.headers();
       expect(resHeaders['content-type']).toContain('application/json');
-      expect(resHeaders).toHaveProperty('x-ratelimit-limit'); // Valida header customizado da API
+      expect(resHeaders).toHaveProperty('x-ratelimit-limit'); 
 
-      // Valida Corpo
+      // Valido o corpo da resposta
       const body = await response.json();
-      expect(body.email).toBe(randomEmail);
+      expect(body.email).toBe(uniqueEmail);
+      expect(body.name).toBe(fakeName); // Valido que salvou o nome do Faker
       expect(body).toHaveProperty('id');
       
+      // Guardo o ID para os testes subsequentes
       userId = body.id;
     });
 
     test('GET /users/{id} - Consultar usuário existente', async ({ request }) => {
+      test.skip(!userId, 'Pulei o teste porque a criação anterior falhou');
+
       const response = await request.get(`${BASE_URL}/users/${userId}`, { headers });
       expect(response.status()).toBe(200);
       const body = await response.json();
       expect(body.id).toBe(userId);
+      expect(body.name).toBe(fakeName); // Garanto persistência do dado
     });
 
     test('PUT /users/{id} - Atualizar dados do usuário', async ({ request }) => {
+      test.skip(!userId, 'Pulei o teste porque a criação anterior falhou');
+
+      // Gero um novo status aleatório apenas para variar
+      const newStatus = "inactive"; 
+
       const response = await request.put(`${BASE_URL}/users/${userId}`, {
         headers,
-        data: { status: "inactive" }
+        data: { status: newStatus }
       });
       expect(response.status()).toBe(200);
       const body = await response.json();
-      expect(body.status).toBe("inactive");
+      expect(body.status).toBe(newStatus);
     });
 
     test('DELETE /users/{id} - Remover usuário', async ({ request }) => {
+      test.skip(!userId, 'Pulei o teste porque a criação anterior falhou');
+
       const response = await request.delete(`${BASE_URL}/users/${userId}`, { headers });
-      expect(response.status()).toBe(204); // No Content
+      expect(response.status()).toBe(204); 
     });
   });
 
@@ -80,46 +103,26 @@ test.describe('API Tests - GoRest (Testes Positivos e Negativos)', () => {
   test.describe('Cenários de Exceção (Negativos)', () => {
 
     test('POST /users - Falha por Campos Ausentes (422)', async ({ request }) => {
-      // Tentando criar sem email e sem gender
       const response = await request.post(`${BASE_URL}/users`, {
         headers,
         data: {
-          name: "Incomplete User",
+          name: faker.person.fullName(), // Nome válido
           status: "active"
+          // Faltou email e gender propositalmente
         }
       });
 
-      // Erro 422 Unprocessable Entity é o padrão GoRest para validação qnd faltam campos
       expect(response.status()).toBe(422);
       
       const body = await response.json();
-      // Valida se a API retorna qual campo faltou
       expect(JSON.stringify(body)).toContain("field");
       expect(JSON.stringify(body)).toContain("message");
-    });
-
-    test('POST /users - Falha por Email Duplicado (422)', async ({ request }) => {
-      // Tenta usar o mesmo email do teste anterior (se ele ainda existisse)
-      // Como deletei, vamos criar um payload inválido propositalmente ou email fixo já usado
-      const response = await request.post(`${BASE_URL}/users`, {
-        headers,
-        data: {
-          name: "Duplicated Guy",
-          email: "already.used@test.com", // Assumindo que alguém já usou esse email público
-          gender: "male",
-          status: "active"
-        }
-      });
-      // A GoRest pode retornar 422 se o email já existe
-      // Se for novo, vai dar 201 (então esse teste é "flaky" em API pública, 
-      // mas demonstra a intenção de validar regra de negócio).
-      // Vamos focar no teste de Autenticação que é mais garantido:
     });
 
     test('GET /users - Falha de Autenticação (401)', async ({ request }) => {
       const response = await request.get(`${BASE_URL}/users`, {
         headers: {
-          'Authorization': 'Bearer token_invalido_123', // Token errado
+          'Authorization': 'Bearer token_invalido_123',
           'Content-Type': 'application/json'
         }
       });
@@ -136,9 +139,6 @@ test.describe('API Tests - GoRest (Testes Positivos e Negativos)', () => {
             headers,
             data: "isso não é um json" 
         });
-        
-        // Dependendo da API pode ser 400 ou 415, ou erro de parse interno
-        // Na GoRest costuma validar o Content-Type
         expect(response.status()).not.toBe(201);
     });
   });
