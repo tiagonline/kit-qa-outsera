@@ -1,9 +1,9 @@
 import { test } from "@playwright/test";
-import { LoginPage } from "../pages/LoginPage";
-import { InventoryPage } from "../pages/InventoryPage";
-import { CartPage } from "../pages/CartPage";
-import { CheckoutPage } from "../pages/CheckoutPage";
-import * as data from "../data/fixtures.json";
+import { LoginPage } from "../../../pages/LoginPage";
+import { InventoryPage } from "../../../pages/InventoryPage";
+import { CartPage } from "../../../pages/CartPage";
+import { CheckoutPage } from "../../../pages/CheckoutPage";
+import * as data from "../../../data/fixtures.json";
 import * as dotenv from "dotenv";
 import { faker } from "@faker-js/faker";
 

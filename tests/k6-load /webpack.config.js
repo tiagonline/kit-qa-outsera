@@ -6,7 +6,7 @@ module.exports = {
   entry: {
     outsera: path.resolve(
       __dirname,
-      "./src/simulations/OutseraChallenge.test.js",
+      "./src/simulations/loadPerformanceOutsera.test.js",
     ),
   },
   output: {
