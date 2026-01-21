@@ -1,7 +1,10 @@
 # playwright-clean-architecture
 
-[![Playwright Tests (CI/CD)](https://github.com/tiagonline/playwright-clean-architecture/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/tiagonline/playwright-clean-architecture/actions/workflows/e2e-tests.yml)
-[![API Tests (Postman/Newman)](https://github.com/tiagonline/playwright-clean-architecture/actions/workflows/api-tests.yml/badge.svg)](https://github.com/tiagonline/playwright-clean-architecture/actions/workflows/api-tests.yml)
+[![E2E Tests](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/e2e-tests.yml)
+
+//tag pra teste de api
+//tag pra teste de carga
+//tag pra teste mobile
 
 **Proof of Concept (POC) demonstrando uma arquitetura escalável utilizando o SwagLabs (E-commerce) como sandbox para simular fluxos transacionais complexos, aplicando boas práticas de Engenharia de Qualidade.**
 
@@ -38,7 +41,8 @@ Este teste técnico foi estruturado com foco em **Qualidade de Engenharia, Segur
 
 5. **Estratégia Full Stack QA:**
    - **Web (Playwright):** Foco na validação da jornada crítica do usuário (E2E).
-   - **API (Postman/Newman):** Foco na validação de contratos, regras de negócio e CRUD de forma rápida e isolada.
+   - **API (Playwright):** Foco na validação de contratos, regras de negócio e CRUD de forma rápida e isolada.
+   - **Performance (K6):** Foco na performance com validações de load e porcentagem de erros. 
 
 6. **CI/CD (GitHub Actions):**
    - Pipelines configurados para execução automática em cada *push* ou *pull request*.
@@ -65,8 +69,8 @@ Este teste técnico foi estruturado com foco em **Qualidade de Engenharia, Segur
 Clone o repositório e instale as dependências:
 
 ```bash
-git clone [https://github.com/tiagonline/playwright-on-flight.git](https://github.com/tiagonline/playwright-on-flight.git)
-cd playwright-on-flight
+git clone [https://github.com/tiagonline/playwright-on-flight.git](https://github.com/tiagonline/kit-qa-outsera.git)
+cd kit-qa-outsera
 npm install
 ```
 
@@ -89,7 +93,7 @@ Visualizar relatório (Trace Viewer)
 npx playwright show-report
 ```
 
-### 4. Rodar Testes de API (Newman)
+### 4. Rodar Testes de API
 Para validar o CRUD de Usuários (GoRest):
 
 Nota: O token de autenticação não deve ser versionado. Por segurança, nas execuções do Github Actions o token foi embedado como secret.
@@ -101,7 +105,7 @@ npm run test:api -- --env-var "token=SEU_TOKEN_AQUI"
 **Nota sobre CI/CD da API**: Os testes de API automatizados via Cron Job podem apresentar instabilidade (falso-negativo) devido ao bloqueio de segurança (WAF/Cloudflare) da API pública GoRest contra os IPs dos runners do GitHub Actions, ainda mais que coloquei o monitoramento sintético todo dia as 9h. Em um ambiente real corporativo, isso seria resolvido com Whitelist de IPs.
 
 ---
-### **Próximos Passos (Visão de Futuro)**
+### **Outras ideias que podemos incluir:**
 Para evoluir este projeto em um ambiente de produção:
 
 - **Integração com Xray/Jira**: Conectar o relatório de testes para visibilidade total do time de gestão.

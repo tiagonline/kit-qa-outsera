@@ -1,5 +1,5 @@
-import { group, sleep } from "k6";
 import GetAnything from "../requests/getAnything.request";
+import { group, sleep } from "k6";
 
 export const options = {
   stages: [
