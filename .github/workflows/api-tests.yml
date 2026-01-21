@@ -1,4 +1,4 @@
-name: API Tests (Postman/Newman)
+name: API Tests (Postman/Newman) (DELETAR)
 on:
   # Roda quando você sobe código
   push:
