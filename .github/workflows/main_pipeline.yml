@@ -1,30 +1,30 @@
-name: Kit QA Outsera - All Tests
+name: Kit QA OutSera - Main Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch: # Permite rodar manualmente clicando num botão
+    branches: [ main, master ]
+  workflow_dispatch: # Permite rodar manualmente clicando num botão na aba Actions
 
 jobs:
   qa-quality-gate:
-    name: 🛡️ Run All Tests (API, E2E, Mobile, Load)
+    name: Run All Tests (API, E2E, Mobile, Load)
     runs-on: ubuntu-latest
     
     steps:
-    # 1. Baixa o código
+    # 1. Baixa o código do repositório
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # 2. Prepara o Node.js
+    # 2. Prepara o ambiente Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 18
         cache: 'npm'
 
-    # 3. Instala dependências do projeto
+    # 3. Instala as dependências do projeto (package.json)
     - name: Install Dependencies
       run: npm ci
 
@@ -32,29 +32,32 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
-    # 5. Instala o K6 (Binário para rodar o teste de carga)
+    # 5. Instala o binário do K6 (Necessário para rodar o teste de carga)
     - name: Setup K6
       uses: grafana/setup-k6-action@v1
 
     # 6. Sobe a Infraestrutura Docker (Grafana + InfluxDB)
-    # Necessário porque seu teste K6 tenta conectar no InfluxDB
+    # O sleep para dar tempo do banco de dados iniciar antes do teste tentar conectar
     - name: Start Docker Infra (K6 Observability)
-      run: npm run k6:infra:up
+      run: |
+        npm run k6:infra:up
+        echo "Aguardando 20 segundos para o InfluxDB estar pronto..."
+        sleep 20
 
     # 7. Roda TODOS os testes
-    # O comando 'test:all' do package.json roda API -> E2E -> K6 -> Mobile
+    # O comando 'test:all' do package.json roda API -> E2E -> Mobile -> K6
     - name: Execute Test Suite
       env:
         GOREST_TOKEN: ${{ secrets.GOREST_TOKEN }} # Pega do GitHub Secrets
         CI: true
       run: npm run test:all
 
-    # 8. Derruba a Infra Docker (Limpeza)
+    # 8. Derruba a Infra Docker (Limpeza), mesmo se o teste falhar
     - name: Stop Docker Infra
       if: always()
       run: npm run k6:infra:down
 
-    # 9. Gera e Salva Relatórios
+    # 9. Gera e Salva o Relatório do Playwright como artefato para download
     - name: Upload Playwright Report
       if: always()
       uses: actions/upload-artifact@v4

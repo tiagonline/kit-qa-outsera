@@ -1,26 +1,22 @@
 {
   "name": "kit-qa-outsera",
+  "description": "Kit de Automação de Testes QA com Playwright, Cucumber e K6",
   "version": "1.0.0",
-  "description": "Projeto de Automação Full Stack (Web/API/Performance/Mobile) focado em Arquitetura Sênior.",
   "scripts": {
     "postinstall": "npx playwright install --with-deps",
-    
     "// --- Testes ---": "",
     "test:api": "npx playwright test tests/api",
     "test:e2e": "npx cucumber-js",
     "test:mobile": "npx playwright test tests/mobile --project='Mobile Chrome'",
-    "test:all": "npm run test:api && npm run test:e2e && npm run k6:run",
-    
-    "// --- Relatórios (Se for rodar apenas Local) ---": "",
-    "report:api": "npx playwright test tests/api && npx playwright show-report",
-    
+    "test:all": "npm run test:api && npm run test:e2e && npm run test:mobile && npm run k6:run",
+    "// --- Relatórios ---": "",
+    "report:api": "npx playwright show-report",
     "// --- K6 (Performance) ---": "",
     "k6:build": "webpack --config tests/k6-load/webpack.config.js",
     "k6:infra:up": "cd tests/k6-load && docker-compose up -d",
     "k6:infra:down": "cd tests/k6-load && docker-compose down",
     "k6:run": "npm run k6:build && k6 run tests/k6-load/dist/outsera.test.js --out influxdb=http://localhost:8086/k6",
-    
-    "// --- Qualidade de Código ---": "",
+    "// --- Qualidade ---": "",
     "format": "prettier --write \"**/*.{ts,js,json,yml,md}\"",
     "lint": "eslint . --ext .ts",
     "ci": "npm run format && npm run lint && npm run test:all"

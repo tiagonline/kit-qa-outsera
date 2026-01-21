@@ -11,11 +11,11 @@
 
 ---
 
-## Sobre o Projeto (Qualidade de Engenharia)
+## Sobre o Projeto
 
-Este teste técnico foi estruturado com foco em **Qualidade de Engenharia, Segurança e Escalabilidade**, pilares de um QA Sênior/Lead.
+Este teste técnico foi estruturado com foco em **Qualidade de Engenharia, Segurança e Escalabilidade**, pilares de um QA Sênior.
 
-- Uso do **Page Object Model (POM)** com métodos e localizadores **genéricos** para alta escalabilidade.  
+- Uso do **Page Object Model (POM)** com métodos e localizadores **genéricos** para alta escalabilidade.
 - Implementação de **Governança de Código** (`lint`, `format`) para garantir padrões de qualidade em equipe.
 - Segurança reforçada através do uso de **variáveis de ambiente** e secrets para todas as credenciais sensíveis.
 - O projeto já inclui pipelines de **CI/CD** (Web e API), provando que a solução é robusta e pronta para ser integrada ao processo de entrega contínua.
@@ -43,10 +43,11 @@ Este teste técnico foi estruturado com foco em **Qualidade de Engenharia, Segur
 5. **Estratégia Full Stack QA:**
    - **Web (Playwright):** Foco na validação da jornada crítica do usuário (E2E).
    - **API (Playwright):** Foco na validação de contratos, regras de negócio e CRUD de forma rápida e isolada.
-   - **Performance (K6):** Foco na performance com validações de load e porcentagem de erros. 
+   - **Performance (K6):** Foco na performance com validações de load e porcentagem de erros.
+   - **Mobile:** ?????
 
 6. **CI/CD (GitHub Actions):**
-   - Pipelines configurados para execução automática em cada *push* ou *pull request*.
+   - Pipelines configurados para execução automática em cada _push_ ou _pull request_.
    - Geração e armazenamento de artefatos de teste (Relatórios HTML e Traces) para depuração rápida de falhas no pipeline.
 
 7. **Monitoramento Sintético (Shift-Right):**
@@ -61,7 +62,7 @@ Este teste técnico foi estruturado com foco em **Qualidade de Engenharia, Segur
 - Node.js (v18+)
 - Playwright Browsers (instalado via `npm init playwright`)
 - Crie um arquivo `.env` na raiz do projeto contendo:
-   - SAUCE_USERNAME=standard_user SAUCE_PASSWORD=secret_sauce
+  - SAUCE_USERNAME=standard_user SAUCE_PASSWORD=secret_sauce
 
 ---
 
@@ -76,25 +77,32 @@ npm install
 ```
 
 ### 2. Governança de Código
+
 Execute os comandos abaixo para garantir que seu código está formatado e limpo antes do commit:
+
 ```bash
 npm run format # Formata o código (Prettier)
 npm run lint   # Verifica a qualidade do código (ESLint)
 ```
 
 ### 3. Rodar Testes Web (Playwright)
+
 - O script npm run test agora carregará automaticamente as variáveis do .env:
 
 Executar testes (Headless)
+
 ```bash
 npm run test
 ```
+
 Visualizar relatório (Trace Viewer)
+
 ```bash
 npx playwright show-report
 ```
 
 ### 4. Rodar Testes de API
+
 Para validar o CRUD de Usuários (GoRest):
 
 Nota: O token de autenticação não deve ser versionado. Por segurança, nas execuções do Github Actions o token foi embedado como secret.
@@ -106,7 +114,9 @@ npm run test:api -- --env-var "token=SEU_TOKEN_AQUI"
 **Nota sobre CI/CD da API**: Os testes de API automatizados via Cron Job podem apresentar instabilidade (falso-negativo) devido ao bloqueio de segurança (WAF/Cloudflare) da API pública GoRest contra os IPs dos runners do GitHub Actions, ainda mais que coloquei o monitoramento sintético todo dia as 9h. Em um ambiente real corporativo, isso seria resolvido com Whitelist de IPs.
 
 ---
+
 ### **Outras ideias que podemos incluir:**
+
 Para evoluir este projeto em um ambiente de produção:
 
 - **Integração com Xray/Jira**: Conectar o relatório de testes para visibilidade total do time de gestão.
