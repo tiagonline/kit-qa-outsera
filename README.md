@@ -118,4 +118,4 @@ Para evoluir este projeto em um ambiente de produção:
 
 - **Regressão Visual (Percy.io)**: Comparação de pixels (snapshots) garante que o CSS não quebrou e que a marca/UX está intacta.
 
-- **Cross-browser em Nuvem (BrowserStack/SauceLabs)**: Rodar os testes do Playwright em grids na nuvem (Safari, Edge, Mobile Real Devices). Como a Onfly é acessada de diversos dispositivos, eu conectaria o pipeline ao BrowserStack para garantir a compatibilidade com Safari (iOS) e dispositivos móveis, sem precisar gerenciar infraestrutura interna.
+- **Cross-browser em Nuvem (BrowserStack/SauceLabs)**: Rodar os testes do Playwright em grids na nuvem (Safari, Edge, Mobile Real Devices). Caso o site seja acessado de diversos dispositivos, eu conectaria o pipeline ao BrowserStack (farm device) para garantir a compatibilidade com Safari (iOS) e dispositivos móveis, sem precisar gerenciar infraestrutura interna.
