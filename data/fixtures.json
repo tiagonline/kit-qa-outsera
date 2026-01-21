@@ -1,0 +1,11 @@
+{
+  "checkout": {
+    "firstName": "Tiago",
+    "lastName": "Silva",
+    "postalCode": "32000-000"
+  },
+  "messages": {
+    "loginError": "Epic sadface: Username and password do not match any user in this service",
+    "postalCodeError": "Error: Postal Code is required"
+  }
+}
