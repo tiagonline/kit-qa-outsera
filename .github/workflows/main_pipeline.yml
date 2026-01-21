@@ -1,0 +1,64 @@
+name: Kit QA Outsera - All Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: # Permite rodar manualmente clicando num botão
+
+jobs:
+  qa-quality-gate:
+    name: 🛡️ Run All Tests (API, E2E, Mobile, Load)
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. Baixa o código
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Prepara o Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: 'npm'
+
+    # 3. Instala dependências do projeto
+    - name: Install Dependencies
+      run: npm ci
+
+    # 4. Instala os Browsers do Playwright (Chromium e Mobile)
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+
+    # 5. Instala o K6 (Binário para rodar o teste de carga)
+    - name: Setup K6
+      uses: grafana/setup-k6-action@v1
+
+    # 6. Sobe a Infraestrutura Docker (Grafana + InfluxDB)
+    # Necessário porque seu teste K6 tenta conectar no InfluxDB
+    - name: Start Docker Infra (K6 Observability)
+      run: npm run k6:infra:up
+
+    # 7. Roda TODOS os testes
+    # O comando 'test:all' do package.json roda API -> E2E -> K6 -> Mobile
+    - name: Execute Test Suite
+      env:
+        GOREST_TOKEN: ${{ secrets.GOREST_TOKEN }} # Pega do GitHub Secrets
+        CI: true
+      run: npm run test:all
+
+    # 8. Derruba a Infra Docker (Limpeza)
+    - name: Stop Docker Infra
+      if: always()
+      run: npm run k6:infra:down
+
+    # 9. Gera e Salva Relatórios
+    - name: Upload Playwright Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 15
