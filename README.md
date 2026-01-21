@@ -1,10 +1,10 @@
-# kit-qa-outsera
+# Kit QA Outsera - Desafio Técnico
 
-[![E2E Tests](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/e2e-tests.yml)
-
-//tag pra teste de api
-//tag pra teste de carga
-//tag pra teste mobile
+![CI Status](https://github.com/SEU_USUARIO/kit-qa-outsera/actions/workflows/main_pipeline.yml/badge.svg)
+![Playwright](https://img.shields.io/badge/Playwright-1.40+-green?logo=playwright&logoColor=white)
+![K6](https://img.shields.io/badge/K6-Performance-purple?logo=k6&logoColor=white)
+![Cucumber](https://img.shields.io/badge/Cucumber-BDD-23d160?logo=cucumber&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker&logoColor=white)
 
 **Proof of Concept (POC) demonstrando uma arquitetura escalável utilizando o SwagLabs (E-commerce) como sandbox para simular fluxos transacionais complexos, aplicando boas práticas de Engenharia de Qualidade.**
 
