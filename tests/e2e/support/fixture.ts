@@ -1,8 +1,8 @@
 import { test as base } from "@playwright/test";
-import { LoginPage } from "../pages/LoginPage";
-import { InventoryPage } from "../pages/InventoryPage";
-import { CartPage } from "../pages/CartPage";
-import { CheckoutPage } from "../pages/CheckoutPage";
+import { LoginPage } from "../../../pages/LoginPage";
+import { InventoryPage } from "../../../pages/InventoryPage";
+import { CartPage } from "../../../pages/CartPage";
+import { CheckoutPage } from "../../../pages/CheckoutPage";
 
 // Declara os tipos das fixtures personalizadas
 type MyFixtures = {
