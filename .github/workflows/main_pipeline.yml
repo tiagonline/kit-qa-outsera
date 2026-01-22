@@ -5,63 +5,76 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch: # Permite rodar manualmente clicando num botão na aba Actions
+  workflow_dispatch: # Botão para rodar manual
 
 jobs:
   qa-quality-gate:
-    name: Run All Tests (API, E2E, Mobile, Load)
+    name: Run Test Suite (API, E2E, Mobile & Load)
     runs-on: ubuntu-latest
     
     steps:
-    # 1. Baixa o código do repositório
+    # 1. Checkout do Código
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # 2. Prepara o ambiente Node.js
+    # 2. Setup do Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 18
         cache: 'npm'
 
-    # 3. Instala as dependências do projeto (package.json)
+    # 3. Instala dependências
     - name: Install Dependencies
       run: npm ci
 
-    # 4. Instala os Browsers do Playwright (Chromium e Mobile)
+    # 4. Instala Browsers (Chrome, Mobile, etc)
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
-    # 5. Instala o binário do K6 (Necessário para rodar o teste de carga)
+    # 5. Instala o K6 Oficial
     - name: Setup K6
       uses: grafana/setup-k6-action@v1
 
-    # 6. Sobe a Infraestrutura Docker (Grafana + InfluxDB)
-    # O sleep para dar tempo do banco de dados iniciar antes do teste tentar conectar
-    - name: Start Docker Infra (K6 Observability)
+    # 6. Sobe o Docker (InfluxDB + Grafana)
+    - name: Start Docker Infra
       run: |
-        npm run k6:infra:up
-        echo "Aguardando 20 segundos para o InfluxDB estar pronto..."
-        sleep 20
+        npm run k6:up
+        echo "⏳ Aguardando 15 segundos para o banco iniciar..."
+        sleep 15
 
-    # 7. Roda TODOS os testes
-    # O comando 'test:all' do package.json roda API -> E2E -> Mobile -> K6
-    - name: Execute Test Suite
+    # 7. Execução dos Testes (O Grande Momento)
+    # Aqui injetamos as secrets para o .env funcionar lá dentro
+    - name: Execute All Tests
       env:
-        GOREST_TOKEN: ${{ secrets.GOREST_TOKEN }} # Pega do GitHub Secrets
+        BASE_URL: ${{ secrets.BASE_URL }}
+        # Adicione aqui outras secrets se tiver (ex: SAUCE_USERNAME)
         CI: true
       run: npm run test:all
 
-    # 8. Derruba a Infra Docker (Limpeza), mesmo se o teste falhar
+    # 8. Limpeza (Teardown)
+    # Roda sempre, mesmo se os testes falharem
     - name: Stop Docker Infra
       if: always()
-      run: npm run k6:infra:down
+      run: npm run k6:down
 
-    # 9. Gera e Salva o Relatório do Playwright como artefato para download
+    # --- ARTEFATOS E RELATÓRIOS ---
+
+    # 9. Upload do Relatório Playwright (API e Mobile)
     - name: Upload Playwright Report
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: playwright-report
         path: playwright-report/
-        retention-days: 15
+        retention-days: 30
+
+    # 10. Upload do Relatório Cucumber (BDD)
+    # Tenta subir o HTML se ele tiver sido gerado
+    - name: Upload Cucumber Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cucumber-report
+        path: cucumber-report.html
+        retention-days: 30
