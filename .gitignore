@@ -25,15 +25,30 @@ yarn-error.log*
 /playwright/.auth/
 
 # ----------------------
-# Postman / Newman (Importante!)
+# Cucumber & Relatórios Gerais
 # ----------------------
-# Ignora a pasta padrão de reports do Newman
+cucumber-report.html
+junit-report.xml
+
+# ----------------------
+# K6 (Performance)
+# ----------------------
+# Ignora a pasta de build gerada pelo Webpack
+tests/k6-load/dist/
+
+# ----------------------
+# Postman / Newman
+# ----------------------
 newman/
-# Ignora o relatório HTML específico que geramos no script
 newman-report.html
 
 # ----------------------
-# IDEs (Opcional mas recomendado)
+# Scripts Temporários
+# ----------------------
+get-docker.sh
+
+# ----------------------
+# IDEs
 # ----------------------
 .vscode/
 .idea/

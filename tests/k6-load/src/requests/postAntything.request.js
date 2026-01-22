@@ -2,47 +2,50 @@ import http from "k6/http";
 import { check, fail, sleep } from "k6";
 import { Trend, Rate } from "k6/metrics";
 
-export let getDuration = new Trend("1_duration");
-export let getReqs = new Rate("2_reqs");
-export let getSuccessRate = new Rate("3_success_rate");
-export let getFailRate = new Rate("4_fail_rate");
+export let postDuration = new Trend("_1_duration_post");
+export let postReqs = new Rate("_2_reqs_post");
+export let postSuccessRate = new Rate("_3_success_rate_post");
+export let postFailRate = new Rate("_4_fail_rate_post");
 
-export default function () {
-  let params = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer xpto",
-    },
-  };
+export default class PostAnything {
+  post() {
+    let params = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer xpto",
+      },
+    };
 
-  let body = JSON.stringify({
-    consumerId: "",
-    profileId: "",
-    customProperties: {
-      login: "postman",
-      data: "12345",
-    },
-  });
+    let body = JSON.stringify({
+      consumerId: "123",
+      profileId: "456",
+      customProperties: {
+        login: "k6_user",
+        data: "teste_carga",
+      },
+    });
 
-  let res = http.post(`https://`, body, params);
+    let res = http.post(`https://httpbin.org/post`, body, params);
 
-  check(res, {
-    "status is 202": (r) => r.status === 202,
-  });
+    check(res, {
+      "status is 200": (r) => r.status === 200, 
+    });
 
-  getDuration.add(res.timings.duration);
-  getReqs.add(1);
-  getSuccessRate.add(res.status < 399);
-  getFailRate.add(res.status == 0 || res.status > 399);
+    // Atualiza as métricas
+    postDuration.add(res.timings.duration);
+    postReqs.add(1);
+    postSuccessRate.add(res.status < 399);
+    postFailRate.add(res.status == 0 || res.status > 399);
 
-  let durationMsg = "Max Duration ${1000/1000}s";
-  if (
-    !check(res, {
-      "max duration": (r) => r.timings.duration < 1000,
-    })
-  ) {
-    fail(durationMsg);
+    let durationMsg = "Max Duration 10s";
+    if (
+      !check(res, {
+        "max duration": (r) => r.timings.duration < 10000,
+      })
+    ) {
+      fail(durationMsg);
+    }
+
+    sleep(1);
   }
-
-  sleep(1);
 }

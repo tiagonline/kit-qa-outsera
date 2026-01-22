@@ -1,5 +1,9 @@
 import { Before, After, BeforeAll, AfterAll, setDefaultTimeout, Status } from '@cucumber/cucumber';
 import { chromium, Browser, Page, BrowserContext } from '@playwright/test';
+import * as dotenv from 'dotenv';
+
+// Garante que as variáveis foram carregadas
+dotenv.config();
 
 // Aumenta o timeout padrão para 30s (caso a net esteja lenta)
 setDefaultTimeout(30 * 1000);

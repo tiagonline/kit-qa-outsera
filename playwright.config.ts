@@ -20,8 +20,7 @@ export default defineConfig({
     // Esta baseURL serve como "Padrão" para testes de UI (Web/Mobile).
     // Assim, nos testes visuais fiz apenas page.goto('/').
     // Nos testes de API, nós sobrescrevemos isso usando a URL completa do GoRest.
-    baseURL: "https://www.saucedemo.com/",
-    
+    baseURL: process.env.BASE_URL || "https://www.saucedemo.com/",    
     video: "on",
     trace: "on",
     screenshot: "only-on-failure",
