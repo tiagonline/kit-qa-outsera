@@ -9,8 +9,10 @@ dotenv.config();
 test.describe.configure({ mode: "serial" });
 
 test.describe("API Tests - GoRest (Testes Positivos e Negativos)", () => {
-  // Se você não colocou API_BASE_URL no .env, usamos a string direta como fallback
-  const API_BASE_URL = process.env.API_BASE_URL || 'https://gorest.co.in/public/v2';
+  // Limpa a URL base para evitar barras duplas ou falta delas
+  const rawBaseURL = process.env.API_BASE_URL || 'https://gorest.co.in/public/v2';
+  const API_BASE_URL = rawBaseURL.endsWith('/') ? rawBaseURL.slice(0, -1) : rawBaseURL;
+  
   const TOKEN = process.env.GOREST_TOKEN;
 
   if (!TOKEN) {

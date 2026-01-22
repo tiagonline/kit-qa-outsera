@@ -1,4 +1,4 @@
-name: Kit QA OutSera - Main Pipeline
+name: workflow-main-pipeline
 
 on:
   push:
@@ -46,9 +46,14 @@ jobs:
     # 7. Execução dos Testes
     - name: Execute All Tests
       env:
-        # No GitHub Secrets fica o 'GOREST_TOKEN'
+        # --- API SECRETS ---
         GOREST_TOKEN: ${{ secrets.GOREST_TOKEN }}
-        API_BASE_URL: ${{ secrets.BASE_URL }}
+        API_BASE_URL: ${{ secrets.API_BASE_URL }} # URL do GoRest (v2)
+        
+        # --- WEB/E2E SECRETS ---
+        BASE_URL: ${{ secrets.BASE_URL }}           # URL do SauceDemo
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
         
         CI: true
       run: npm run test:all
@@ -70,7 +75,6 @@ jobs:
         retention-days: 30
 
     # 10. Upload do Relatório Cucumber (BDD)
-    # Tenta subir o HTML se ele tiver sido gerado
     - name: Upload Cucumber Report
       if: always()
       uses: actions/upload-artifact@v4

@@ -2,7 +2,7 @@
 
 > Projeto de automação de testes "End-to-End" simulando um ambiente real de produção. O projeto abrange testes de API, Interface Web (BDD), Mobile (Emulação) e Performance (Carga).
 
-[![CI Status](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/main_pipeline.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/main_pipeline.yml)
+[![CI Status](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/workflow-main-pipeline.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/workflow-main-pipeline.yml)
 ![Playwright](https://img.shields.io/badge/Playwright-1.40+-green?logo=playwright&logoColor=white)
 ![Cucumber](https://img.shields.io/badge/Cucumber-BDD-23d160?logo=cucumber&logoColor=white)
 ![K6](https://img.shields.io/badge/K6-Performance-purple?logo=k6&logoColor=white)
