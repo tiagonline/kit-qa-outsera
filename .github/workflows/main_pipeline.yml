@@ -78,3 +78,12 @@ jobs:
         name: cucumber-report
         path: cucumber-report.html
         retention-days: 30
+
+    # 11. Upload do Resumo do K6 (Load)
+    - name: Upload K6 Load Test Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: k6-performance-report
+        path: k6-summary.json
+        retention-days: 30
