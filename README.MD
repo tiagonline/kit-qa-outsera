@@ -1,4 +1,4 @@
-# 🚀 Kit QA Outsera - Automação Full Stack
+# Kit QA Outsera - Automação Full Stack
 
 > Projeto de automação de testes "End-to-End" simulando um ambiente real de produção. O projeto abrange testes de API, Interface Web (BDD), Mobile (Emulação) e Performance (Carga).
 
@@ -11,7 +11,7 @@
 
 ---
 
-## 🏗️ Arquitetura e Estrutura
+## Arquitetura e Estrutura
 
 O projeto utiliza uma arquitetura modular baseada em **TypeScript**, focada em escalabilidade e facilidade de manutenção.
 
@@ -22,7 +22,7 @@ O projeto utiliza uma arquitetura modular baseada em **TypeScript**, focada em e
 * **Performance:** [K6](https://k6.io/) com InfluxDB e Grafana via Docker.
 * **CI/CD:** GitHub Actions.
 
-### 📂 Estrutura de Pastas
+### Estrutura de Pastas
 ```text
 kit-qa-outsera/
 ├── .github/workflows/   # Pipeline de CI/CD (GitHub Actions)
@@ -38,7 +38,7 @@ kit-qa-outsera/
 
 ---
 
-## 🧩 Instalação e Dependências
+## Instalação e Dependências
 
 Para executar este projeto localmente, necessitas de:
 
@@ -61,12 +61,18 @@ npm install
 npx playwright install --with-deps
 ```
 
-#### 3. Variáveis de Ambiente:
-Configura o ficheiro `.env` baseado no `.env.example` com o teu `GOREST_TOKEN`.
+#### 3. Segurança utilizando - Variáveis de Ambiente:
+Configura o ficheiro `.env` baseado no `.env.example` com o seu `GOREST_TOKEN`.
+
+### 3.1 Go Rest
+- Acesse o site https://gorest.co.in/, faça login e crie um token.
+- Cole este token no seu parametro GOREST_TOKEN= do seu arquivo `.env` e salve.
+
+Nota: O token de autenticação não deve ser versionado. Por segurança, nas execuções do Github Actions o token foi embedado como secret.
 
 ---
 
-## 🧪 Como Executar os Testes
+## Como Executar os Testes
 
 | Cenário              | Comando              |
 |----------------------|----------------------|
@@ -78,7 +84,7 @@ Configura o ficheiro `.env` baseado no `.env.example` com o teu `GOREST_TOKEN`.
 
 ---
 
-## 📈 Relatórios e Evidências
+## Relatórios e Evidências
 
 ### **Playwright Report**
 
@@ -91,7 +97,7 @@ npx playwright show-report
 
 ---
 
-### 📊 Análise de Performance (Tarefa 2)
+### Análise de Performance (Tarefa 2)
 
 O teste foi configurado para simular **500 utilizadores simultâneos** durante **5 minutos**, cumprindo os requisitos técnicos.
 
@@ -103,13 +109,13 @@ O teste foi configurado para simular **500 utilizadores simultâneos** durante *
 
 ---
 
-## 🧭 Produção e Boas Práticas
+## Produção e Boas Práticas
 
 Este projeto foi desenvolvido seguindo padrões de mercado para **produção**:
 
 - **Page Object Model (POM):** Separação clara entre lógica de teste e seletores.  
 - **Continuous Integration:** Pipeline automatizado que valida cada alteração.  
-- **Observabilidade:** Monitorização de performance com dashboards profissionais.  
+- **Observabilidade:** Monitorização de performance com dashboards profissionais com **Grafana**.  
 - **Segurança:** Uso de **Secrets** para gestão de tokens e dados sensíveis.
 
 ---
