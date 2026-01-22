@@ -1,7 +1,6 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import { LoginPage } from '../../../pages/LoginPage';
-import { faker } from '@faker-js/faker';
 
 let loginPage: LoginPage;
 
@@ -11,7 +10,11 @@ Given('que estou na página de login', async function () {
 });
 
 When('preencho as credenciais válidas', async function () {
-  await loginPage.login("standard_user", "secret_sauce");
+  //Priorizo variáveis de ambiente, mantém fallback para desenvolvimento local
+  const username = process.env.SAUCE_USERNAME || "standard_user";
+  const password = process.env.SAUCE_PASSWORD || "secret_sauce";
+  
+  await loginPage.login(username, password);
 });
 
 When('tento logar com usuario {string} e senha {string}', async function (usuario, senha) {
