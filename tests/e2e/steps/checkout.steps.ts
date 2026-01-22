@@ -1,95 +1,65 @@
-import { test } from "@playwright/test";
-import { LoginPage } from "../../../pages/LoginPage";
-import { InventoryPage } from "../../../pages/InventoryPage";
-import { CartPage } from "../../../pages/CartPage";
-import { CheckoutPage } from "../../../pages/CheckoutPage";
-import * as data from "../support/fixtures.json";
-import * as dotenv from "dotenv";
-import { faker } from "@faker-js/faker";
+import { Given, When, Then } from '@cucumber/cucumber';
+import { expect } from '@playwright/test';
+import { LoginPage } from '../../../pages/LoginPage.ts';
+import { InventoryPage } from '../../../pages/InventoryPage.ts';
+import { CartPage } from '../../../pages/CartPage.ts';
+import { CheckoutPage } from '../../../pages/CheckoutPage.ts';
+import { faker } from '@faker-js/faker';
 
-dotenv.config();
+// Variáveis para compartilhar entre os steps
+let loginPage: LoginPage;
+let inventoryPage: InventoryPage;
+let cartPage: CartPage;
+let checkoutPage: CheckoutPage;
 
-test.describe("E2E | Fluxo de Compra SAUCE LABS", () => {
-  let loginPage: LoginPage;
-  let inventoryPage: InventoryPage;
-  let cartPage: CartPage;
-  let checkoutPage: CheckoutPage;
+Given('que estou logado', async function () {
+  loginPage = new LoginPage(this.page);
+  inventoryPage = new InventoryPage(this.page);
+  cartPage = new CartPage(this.page);
+  checkoutPage = new CheckoutPage(this.page);
 
-  // Credenciais via variáveis de ambiente para segurança
-  const VALID_USERNAME = process.env.SAUCE_USERNAME || "standard_user";
-  const VALID_PASSWORD = process.env.SAUCE_PASSWORD || "secret_sauce";
+  await loginPage.goto();
+  await loginPage.login("standard_user", "secret_sauce");
+});
 
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
-    cartPage = new CartPage(page);
-    checkoutPage = new CheckoutPage(page);
-    await loginPage.goto();
-  });
+When('adicionei o produto {string} ao carrinho', async function (produtoNome) {
+  await inventoryPage.addItemToCart(produtoNome);
+});
 
-  test("Cenário Negativo - Deve falhar ao tentar logar com credenciais inválidas", async () => {
-    // Geração dinâmica de dados inválidos
-    const invalidPassword = faker.internet.password();
-    const invalidUsername = faker.internet.userName();
+When('acesso o carrinho', async function () {
+  await inventoryPage.goToCart();
+});
 
-    await test.step("Quando: Tenta logar com credenciais inválidas (geradas dinamicamente)", async () => {
-      await loginPage.login(invalidUsername, invalidPassword);
-    });
+When('prossigo para o checkout', async function () {
+  await cartPage.proceedToCheckout();
+});
 
-    await test.step("Então: Deve mostrar mensagem de erro", async () => {
-      await loginPage.validateErrorMessage(data.messages.loginError);
-    });
-  });
+When('preencho os dados de entrega corretamente', async function () {
+  await checkoutPage.fillInformation(
+    faker.person.firstName(),
+    faker.person.lastName(),
+    faker.location.zipCode()
+  );
+});
 
-  test("Cenário E2E Principal - Deve realizar a compra de um item com sucesso", async () => {
-    // DADOS DINÂMICOS: Garante que cada execução use um perfil único
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const postalCode = faker.location.zipCode();
+When('finalizo a compra', async function () {
+  await checkoutPage.finishCheckout();
+});
 
-    await test.step("Dado: Que o login é feito com sucesso", async () => {
-      await loginPage.login(VALID_USERNAME, VALID_PASSWORD);
-    });
+Then('devo ver a mensagem de confirmação {string}', async function (mensagem) {
+  await checkoutPage.validateOrderComplete();
+  const header = this.page.locator('.complete-header');
+  await expect(header).toContainText(mensagem);
+});
 
-    await test.step("Quando: Adiciono a mochila e prossigo para o checkout", async () => {
-      await inventoryPage.addItemToCart("Sauce Labs Backpack");
-      await inventoryPage.goToCart();
-      await cartPage.proceedToCheckout();
-    });
+// --- Steps para o Cenário Negativo (Tarefa 2) ---
 
-    await test.step("E: Preencho os dados de entrega dinâmicos", async () => {
-      // Preenchimento com dados gerados pelo faker
-      await checkoutPage.fillInformation(firstName, lastName, postalCode);
-    });
+When('tento continuar sem preencher o formulário', async function () {
+  // Clica em continue sem preencher nada
+  await this.page.locator('[data-test="continue"]').click();
+});
 
-    await test.step("Então: Finalizo o pedido e vejo a confirmação", async () => {
-      await checkoutPage.finishCheckout();
-      await checkoutPage.validateOrderComplete();
-    });
-  });
-
-  test("Cenário Exceção - Deve falhar o checkout com campos de entrega incompletos", async () => {
-    await test.step("Dado: Que o login é feito com sucesso", async () => {
-      await loginPage.login(VALID_USERNAME, VALID_PASSWORD);
-    });
-
-    await test.step("Quando: Adiciono item e tento continuar sem o CEP", async () => {
-      await inventoryPage.addItemToCart("Sauce Labs Backpack");
-      await inventoryPage.goToCart();
-      await cartPage.proceedToCheckout();
-
-      // Simulação de erro (CEP vazio).
-      // Nota: Aqui usei dados estáticos pois o foco é validar o campo vazio,
-      // mas poderia usar faker também se preferisse.
-      await checkoutPage.fillInformation(
-        data.checkout.firstName,
-        data.checkout.lastName,
-        "",
-      );
-    });
-
-    await test.step("Então: Deve exibir a mensagem de erro de CEP obrigatório", async () => {
-      await checkoutPage.validateErrorMessage(data.messages.postalCodeError);
-    });
-  });
+Then('devo ver a mensagem de erro no checkout {string}', async function (msgErro) {
+  const locatorErro = this.page.locator('[data-test="error"]');
+  await expect(locatorErro).toContainText(msgErro);
 });

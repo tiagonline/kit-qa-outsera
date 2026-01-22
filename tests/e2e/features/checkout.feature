@@ -1,19 +1,24 @@
-Feature: Fluxo de Compra SAUCE LABS
+# language: pt
+Funcionalidade: Checkout de Produtos
+  Como um usuário logado
+  Quero finalizar a compra de itens do carrinho
+  Para receber os produtos em minha casa
 
-  Background:
-    Given que estou na página de login do Sauce Labs
+  Contexto:
+    Dado que estou logado
+    E adicionei o produto "Sauce Labs Backpack" ao carrinho
 
-  Scenario: Cenário Negativo - Deve falhar ao tentar logar com credenciais inválidas
-    When tento logar com credenciais inválidas geradas dinamicamente
-    Then devo ver uma mensagem de erro de login
+  @task2 @checkout @smoke
+  Cenario: Compra realizada com sucesso (Fluxo Positivo)
+    Quando acesso o carrinho
+    E prossigo para o checkout
+    E preencho os dados de entrega corretamente
+    E finalizo a compra
+    Entao devo ver a mensagem de confirmação "Thank you for your order!"
 
-  Scenario: Cenário E2E Principal - Deve realizar a compra de um item com sucesso
-    Given que faço login com credenciais válidas
-    When adiciono a mochila ao carrinho e prossigo para o checkout
-    And preencho os dados de entrega com informações dinâmicas
-    Then finalizo o pedido e vejo a confirmação de compra
-
-  Scenario: Cenário Exceção - Deve falhar o checkout com campos de entrega incompletos
-    Given que faço login com credenciais válidas
-    When adiciono um item ao carrinho e tento continuar sem o CEP
-    Then devo ver uma mensagem de erro de CEP obrigatório
+  @task2 @checkout @negativo
+  Cenario: Tentar finalizar compra sem dados de entrega (Fluxo Negativo)
+    Quando acesso o carrinho
+    E prossigo para o checkout
+    E tento continuar sem preencher o formulário
+    Entao devo ver a mensagem de erro no checkout "Error: First Name is required"
