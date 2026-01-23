@@ -5,93 +5,99 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch: # Botão para rodar manual
+  workflow_dispatch:
 
 jobs:
-  qa-quality-gate:
-    name: Run Test Suite (API, E2E, Mobile & Load)
+  # --- JOB 1: API TESTS ---
+  api-tests:
+    name: API Testing
     runs-on: ubuntu-latest
-    
     steps:
-    # 1. Checkout do Código
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Run API Tests
+        run: npm run test:api
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-report
+          path: playwright-report/
 
-    # 2. Setup do Node.js
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18
-        cache: 'npm'
+  # --- JOB 2: E2E TESTS (CUCUMBER) ---
+  e2e-tests:
+    name: E2E Testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Run E2E Tests
+        run: npm run test:e2e
+        env:
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cucumber-report
+          path: cucumber-report.html
 
-    # 3. Instala dependências
-    - name: Install Dependencies
-      run: npm ci
+  # --- JOB 3: MOBILE TESTS ---
+  mobile-tests:
+    name: Mobile Testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Run Mobile Tests
+        run: npm run test:mobile
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-report
+          path: playwright-report/
 
-    # 4. Instala Browsers (Chrome, Mobile, etc)
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-
-    # 5. Instala o K6 Oficial
-    - name: Setup K6
-      uses: grafana/setup-k6-action@v1
-
-    # 6. Sobe o Docker (InfluxDB + Grafana)
-    - name: Start Docker Infra
-      run: |
-        npm run k6:up
-        echo "⏳ Aguardando 15 segundos para o banco iniciar..."
-        sleep 15
-
-    # 7. Evita erro de permissão do K6 (EACCES) no Webpack
-    - name: Fix K6 Dist Permissions
-      run: |
-        mkdir -p tests/k6-load/dist
-        sudo chmod -R 777 tests/k6-load/dist
-
-    # 8. Execução dos Testes
-    - name: Execute All Tests
-      env:
-        # --- API SECRETS ---
-        API_BASE_URL: ${{ secrets.API_BASE_URL }}
-        
-        # --- WEB/E2E SECRETS ---
-        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-        SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
-        
-        CI: true
-      run: npm run test:all
-
-    # 9. Limpeza (Teardown)
-    - name: Stop Docker Infra
-      if: always()
-      run: npm run k6:down
-
-    # --- ARTEFATOS E RELATÓRIOS ---
-
-    # 10. Upload do Relatório Playwright (API e Mobile)
-    - name: Upload Playwright Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
-
-    # 11. Upload do Relatório Cucumber (BDD)
-    - name: Upload Cucumber Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: cucumber-report
-        path: cucumber-report.html
-        retention-days: 30
-
-    # 12. Upload do Resumo do K6 (Load)
-    - name: Upload K6 Load Test Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: k6-performance-report
-        path: k6-summary.json
-        retention-days: 30
+  # --- JOB 4: LOAD TESTS (K6) ---
+  load-tests:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm ci
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+      - name: Start Docker & Run Load Tests
+        run: |
+          npm run k6:up
+          mkdir -p tests/k6-load/dist
+          sudo chmod -R 777 tests/k6-load/dist
+          npm run k6:run -- --summary-export=k6-summary.json
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      - name: Stop Docker
+        if: always()
+        run: npm run k6:down
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: k6-report
+          path: k6-summary.json
