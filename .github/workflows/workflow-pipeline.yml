@@ -43,29 +43,33 @@ jobs:
         echo "⏳ Aguardando 15 segundos para o banco iniciar..."
         sleep 15
 
-    # 7. Execução dos Testes
+    # 7. CORREÇÃO DE PERMISSÕES (Crucial para evitar EACCES no Webpack)
+    - name: Fix K6 Dist Permissions
+      run: |
+        mkdir -p tests/k6-load/dist
+        sudo chmod -R 777 tests/k6-load/dist
+
+    # 8. Execução dos Testes
     - name: Execute All Tests
       env:
         # --- API SECRETS ---
-        GOREST_TOKEN: ${{ secrets.GOREST_TOKEN }}
-        API_BASE_URL: ${{ secrets.API_BASE_URL }} # URL do GoRest (v2)
+        API_BASE_URL: ${{ secrets.API_BASE_URL }}
         
         # --- WEB/E2E SECRETS ---
-        BASE_URL: ${{ secrets.BASE_URL }}           # URL do SauceDemo
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
         
         CI: true
       run: npm run test:all
 
-    # 8. Limpeza (Teardown)
+    # 9. Limpeza (Teardown)
     - name: Stop Docker Infra
       if: always()
       run: npm run k6:down
 
     # --- ARTEFATOS E RELATÓRIOS ---
 
-    # 9. Upload do Relatório Playwright (API e Mobile)
+    # 10. Upload do Relatório Playwright (API e Mobile)
     - name: Upload Playwright Report
       if: always()
       uses: actions/upload-artifact@v4
@@ -74,7 +78,7 @@ jobs:
         path: playwright-report/
         retention-days: 30
 
-    # 10. Upload do Relatório Cucumber (BDD)
+    # 11. Upload do Relatório Cucumber (BDD)
     - name: Upload Cucumber Report
       if: always()
       uses: actions/upload-artifact@v4
@@ -83,7 +87,7 @@ jobs:
         path: cucumber-report.html
         retention-days: 30
 
-    # 11. Upload do Resumo do K6 (Load)
+    # 12. Upload do Resumo do K6 (Load)
     - name: Upload K6 Load Test Report
       if: always()
       uses: actions/upload-artifact@v4
