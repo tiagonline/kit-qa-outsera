@@ -37,7 +37,12 @@ junit-report.xml
 # ----------------------
 # Ignora a pasta de build gerada pelo Webpack
 tests/k6-load/dist/
+
+# Ignora o relatório de sumário
 k6-summary.json
+
+# Se você gerar outros logs do InfluxDB ou Docker
+*.log
 
 # ----------------------
 # Postman / Newman

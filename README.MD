@@ -212,6 +212,8 @@ O projeto foi desenhado para ser agnóstico ao ambiente, permitindo a alternar e
 
 - **Ambiente de PRD:** Execução seletiva de Smoke Tests (utilizando a tag @smoke), focando na disponibilidade dos serviços críticos (Happy Paths) sem gerar poluição de dados ou consumo desnecessário de recursos.
 
+#### **Nota:** sobre CI/CD: Enquanto localmente utilizamos a pasta envs/ para alternar contextos, em ambiente de CI (GitHub Actions), as variáveis são injetadas de forma segura via Repository Secrets, garantindo que nenhum dado sensível precise estar versionado no repositório.
+
 ---
 
 ### Exemplo de execução por ambiente:
