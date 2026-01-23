@@ -26,13 +26,18 @@ O projeto utiliza uma arquitetura modular baseada em **TypeScript**, focada em e
 ```text
 kit-qa-outsera/
 ├── .github/workflows/   # Pipeline de CI/CD (GitHub Actions)
-├── pages/               # Page Objects (Mapeamento de elementos e ações)
+├── pages/               # Page Objects (Encapsulamento de elementos e ações)
 ├── tests/
-│   ├── api/             # Testes de Integração de API
-│   ├── e2e/             # Testes Web com Cucumber (Features & Steps)
-│   ├── mobile/          # Testes de Emulação Mobile
-│   ├── k6-load/         # Testes de Carga e Performance (K6)
-│   └── support/         # Hooks, Fixtures e Configurações Globais
+│   ├── api/             # Automação de API (Playwright + Faker)
+│   ├── e2e/             # Testes de Ponta a Ponta (Cucumber)
+│   │   ├── features/    # Especificações de negócio (Gherkin)
+│   │   ├── steps/       # Implementação técnica dos passos (TypeScript)
+│   │   ├── support/     # Hooks e configurações globais do Cucumber
+│   │   └── extra/       # Testes complementares (Playwright Native)
+│   ├── mobile/          # Testes de responsividade mobile (Playwright)
+│   └── k6-load/         # Testes de performance e carga (K6 + Docker + Grafana)
+├── playwright-report/   # Evidências de execução local
+├── .github/workflows/   # Pipeline paralela (GitHub Actions)
 └── playwright.config.ts # Configuração centralizada do Playwright
 ```
 
@@ -78,6 +83,8 @@ O projeto utiliza o ficheiro **.env** para gerir dados sensíveis e configuraç�
 Por boas práticas de segurança, o ficheiro **.env** não é enviado para o repositório (está no **.gitignore**).  
 Nas execuções do **GitHub Actions**, estas variáveis foram configuradas como **Secrets** do repositório, permitindo que a pipeline rode de forma segura sem expor dados sensíveis em logs públicos.
 
+> **Diferencial Técnico**: O pipeline foi otimizado com a estratégia de Multi-Jobs Paralelos. Isso significa que os testes de API, E2E, Mobile e Performance rodam em máquinas independentes e simultâneas, garantindo escalabilidade e um feedback muito mais rápido para o time de desenvolvimento.
+
 ---
 
 ## 4. Como Executar os Testes
@@ -90,29 +97,52 @@ Nas execuções do **GitHub Actions**, estas variáveis foram configuradas como 
 | Testes Mobile        | `npm run test:mobile`|
 | Teste de Performance | `npm run k6:run`     |
 
-### 4.1 🛠️ Como visualizar os relatórios:
-1. Vá até a aba **Actions** no GitHub.  
-2. Selecione a última execução bem-sucedida.  
-3. No final da página, descarregue os **Artifacts**.  
-4. Extraia os arquivos e abra o `index.html` (Playwright) ou `cucumber-report.html` (E2E) no seu navegador preferido.
+---
+
+## 5. Evidências e Relatórios
+
+O projeto está configurado para gerar evidências detalhadas tanto em ambiente local quanto em integração contínua.
 
 ---
 
-## 5. Relatórios e Evidências
+### 5.1 Execução Local
 
-### 5.1 Playwright Report
+Após rodar os testes na sua máquina, os relatórios podem ser encontrados nos seguintes locais:
 
-Após os testes funcionais, o relatório HTML detalhado é gerado automaticamente.  
-Para visualizar:
-```bash
-npx playwright show-report
-```
+- **API & Mobile (Playwright):**  
+  - Local: `playwright-report/index.html`  
+  - Para abrir: `npx playwright show-report`
+
+- **E2E (Cucumber):**  
+  - Local: `cucumber-report.html` (abrir diretamente no navegador)
+
+- **Performance (k6):**  
+  - Local: `k6-summary.json` (resumo técnico) ou via **Grafana**  
+    (`http://localhost:3000`) se o Docker ainda estiver ativo.
+
+---
+
+### 5.2 Execução no CI/CD (GitHub Actions)
+
+Devido a execução dos **Jobs Paralelos**, o GitHub Actions gera arquivos separados para cada especialidade. 
+Para visualizá-los:
+
+1. Abra à aba **Actions** no repositório.  
+2. Clique no **workflow** executado (ex: `workflow-pipeline`).  
+3. No final da página, na seção **Artifacts**, encontrará os seguintes pacotes:
+
+   -  **api-report:** Relatórios de status e payloads da API.  
+   -  **cucumber-report:** Fluxos BDD com as regras de negócio.  
+   -  **mobile-report:** Evidências de responsividade mobile.  
+   -  **k6-report:** Métricas de performance e carga.
+   
+#### **Nota:** Todos os relatórios HTML podem ser visualizados descompactando o `.zip` e abrindo o `.html` pelo navegador.
 
 ---
 
 ## 6. Análise de Performance (Tarefa 2 – k6)
 
-O teste de carga foi executado utilizando **k6** e conteinerização com **Docker**, simulando um cenário de alta disponibilidade com **500 usuários simultâneos (VUs)**.
+O teste de carga foi executado utilizando **k6** e conteinerização com **Docker**, simulando um cenário de alta disponibilidade com **500 usuários simultâneos (VUs)** por 5 minutos no plateau.
 
 ### 6.1 Resumo da Execução
 
