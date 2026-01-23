@@ -12,8 +12,10 @@ yarn-error.log*
 # Segurança & Ambiente
 # ----------------------
 .env
-.env.local
+.env.*local
 .env.test
+envs/.env.*
+!envs/.env.example
 
 # ----------------------
 # Playwright

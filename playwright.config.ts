@@ -1,5 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 import * as dotenv from 'dotenv';
+import path from 'path';
+
+// Se ENV_FILE for passado (pelo script), usa ele. 
+// Senão, tenta o .env da raiz.
+const envPath = process.env.DOTENV_CONFIG_PATH || '.env'; 
+dotenv.config({ path: path.resolve(__dirname, envPath) });
 
 dotenv.config();
 
