@@ -17,7 +17,11 @@
     "k6:ci": "npm run k6:run -- --summary-export=k6-summary.json && npm run k6:down",
     "format": "prettier --write \"**/*.{ts,js,json,yml,md}\"",
     "lint": "eslint . --ext .ts",
-    "ci": "npm run format && npm run lint && npm run test:all"
+    "ci": "npm run format && npm run lint && npm run test:all",
+
+    "test:api:dev": "dotenv -e envs/.env.dev -- npx playwright test tests/api",
+    "test:api:hmg": "dotenv -e envs/.env.hmg -- npx playwright test tests/api",
+    "test:e2e:prd": "dotenv -e envs/.env.prd -- npx cucumber-js --tags '@smoke'"
   },
   "keywords": [
     "playwright",

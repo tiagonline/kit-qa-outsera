@@ -26,6 +26,10 @@ O projeto utiliza uma arquitetura modular baseada em **TypeScript**, focada em e
 ```text
 kit-qa-outsera/
 ├── .github/workflows/   # Pipeline de CI/CD (GitHub Actions)
+├── envs/                # Distinção da execução dos testes por ambientes
+│   ├── .env.dev
+│   ├── .env.hmg
+│   └── .env.prd
 ├── pages/               # Page Objects (Encapsulamento de elementos e ações)
 ├── tests/
 │   ├── api/             # Automação de API (Playwright + Faker)
@@ -182,6 +186,38 @@ Este projeto foi desenvolvido seguindo padrões de mercado para **produção**:
 - **Continuous Integration:** Pipeline automatizado que valida cada alteração.  
 - **Observabilidade:** Monitorização de performance com dashboards profissionais com **Grafana**.  
 - **Segurança:** Uso de **Secrets** para gestão de tokens e dados sensíveis.
+
+---
+
+## 8. Decisões de Produção
+
+- **Isolamento:** Uso de Docker para garantir que o ambiente de teste de carga seja idêntico em qualquer máquina.
+- **Estratégia de Dados:** Implementação de dados dinâmicos para evitar colisões em ambientes compartilhados.
+- **CI Otimizado:** Divisão de jobs para paralelismo, visando a redução do tempo de build e feedback rápido (Shift-Left Testing).
+
+---
+
+## 9. Gestão de Ambientes e Multi-Configuração
+
+O projeto foi desenhado para ser agnóstico ao ambiente, permitindo a alternar entre os diferentes estágios do ciclo de vida de desenvolvimento sem alteração no código fonte:
+
+- **Ambiente de DEV:** Execução rápida de testes unitários de API e fluxos E2E básicos durante o desenvolvimento.
+
+- **Ambiente de HMG:** Validação rigorosa de regressão, testes mobile e testes de carga (k6) para garantir a estabilidade antes do deploy.
+
+- **Ambiente de PRD:** Execução seletiva de Smoke Tests (utilizando a tag @smoke), focando na disponibilidade dos serviços críticos (Happy Paths) sem gerar poluição de dados ou consumo desnecessário de recursos.
+
+---
+
+### Exemplo de execução por ambiente:
+
+```bash
+# Rodando API em Homologação
+npm run test:api:hmg
+
+# Rodando apenas Smoke Tests em Produção
+npm run test:e2e:prd
+```
 
 ---
 
