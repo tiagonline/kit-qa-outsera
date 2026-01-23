@@ -54,6 +54,11 @@ Para executar este projeto localmente, necessitas de:
 1. **Node.js** (v18 ou superior)  
 2. **Docker** (para os testes de carga com monitorização)
 
+#### **Dica**: Para rodar os testes de carga sem problemas de permissão no Linux, garanta que seu usuário esteja no grupo do docker: 
+```bash 
+sudo usermod -aG docker $USER && newgrp docker
+```
+
 ### 2.1 Instalação
 
 #### 2.1.1 Clonar o repositório:

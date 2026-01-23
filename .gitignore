@@ -37,6 +37,7 @@ junit-report.xml
 # ----------------------
 # Ignora a pasta de build gerada pelo Webpack
 tests/k6-load/dist/
+k6-summary.json
 
 # ----------------------
 # Postman / Newman
