@@ -124,7 +124,7 @@ test.describe("API Tests - Quality Gate OutSera (JSONPlaceholder)", () => {
     });
 
     test("Simulação de Falha de Autenticação (Header Inválido)", async ({ playwright }) => {
-        // Criamos um contexto com token "podre" para validar o comportamento
+        // Crio um contexto com token inválido para validar o comportamento
         const authContext = await playwright.request.newContext({
             extraHTTPHeaders: { 'Authorization': 'Bearer TOKEN_EXPIRADO_TESTE' }
         });

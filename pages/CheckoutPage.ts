@@ -40,12 +40,12 @@ export class CheckoutPage {
     await this.finishButton.click();
   }
 
-  // Método de Validação (Sênior): Isolando o expect no Page Object para maior coesão
+  // Método de Validação: Isolando o expect no Page Object
   async validateErrorMessage(message: string) {
     await expect(this.errorMessage).toContainText(message);
   }
 
-  // Método de Validação (Sênior): Isolando o expect no Page Object
+  // Método de Validação: Isolando o expect no Page Object
   async validateOrderComplete() {
     await expect(this.orderCompleteHeader).toHaveText(
       "Thank you for your order!",

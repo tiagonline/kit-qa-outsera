@@ -30,7 +30,7 @@ export class LoginPage {
     
     // Aguarda a URL de sucesso de forma simples
     await this.page.waitForURL(/.*inventory.html/, { timeout: 3000 }).catch(() => {
-      // Silenciei apenas para não quebrar os testes de "Login Inválido", ou seja, 
+      // Dei esse tempo apenas para não quebrar os testes de "Login Inválido", ou seja, 
       // se em 3 segundos a URL não mudar para inventory, tudo bem, não dê erro, 
       // apenas siga para o próximo passo
     });

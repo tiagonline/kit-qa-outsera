@@ -15,7 +15,7 @@ let page: Page;
 // Roda 1 vez antes de tudo (Inicia o Browser)
 BeforeAll(async function () {
   browser = await chromium.launch({ 
-    headless: true, // Mude para false se quiser ver acontecendo
+    headless: true, // Mude para false se quiser ver os testes rodando no browser
     args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"]
   });
 });

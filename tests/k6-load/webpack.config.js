@@ -34,7 +34,6 @@ module.exports = {
     ],
   },
   target: "web",
-  // 👇 A CORREÇÃO MÁGICA ESTÁ AQUI (Adicionei o ^)
   externals: /^k6(\/.*)?/, 
   plugins: [
     new CleanWebpackPlugin(),

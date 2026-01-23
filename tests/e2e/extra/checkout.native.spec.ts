@@ -44,7 +44,7 @@ test.describe("E2E Nativo | Fluxo de Compra SAUCE LABS", () => {
   });
 
   test("Cenário E2E Principal - Deve realizar a compra de um item com sucesso", async () => {
-    // DADOS DINÂMICOS
+    // Dados dinâmicos criados pelo FAKER
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     const postalCode = faker.location.zipCode();
