@@ -43,7 +43,7 @@ jobs:
         echo "⏳ Aguardando 15 segundos para o banco iniciar..."
         sleep 15
 
-    # 7. CORREÇÃO DE PERMISSÕES (Crucial para evitar EACCES no Webpack)
+    # 7. Evita erro de permissão do K6 (EACCES) no Webpack
     - name: Fix K6 Dist Permissions
       run: |
         mkdir -p tests/k6-load/dist
