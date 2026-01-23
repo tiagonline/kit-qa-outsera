@@ -1,3 +1,4 @@
+//Tive quer criar este arquivo para permitir a importação de arquivos .ts no ts-node
 {
   "compilerOptions": {
     "target": "ES2022",
