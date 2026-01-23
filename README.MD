@@ -11,18 +11,18 @@
 
 ---
 
-## Arquitetura e Estrutura
+## 1. Arquitetura e Estrutura
 
 O projeto utiliza uma arquitetura modular baseada em **TypeScript**, focada em escalabilidade e facilidade de manutenção.
 
-### Tecnologias e Versões
+### 1.1 Tecnologias e Versões
 * **Linguagem:** TypeScript / JavaScript (Node.js v18+)
 * **E2E & Mobile:** [Playwright v1.40+](https://playwright.dev/)
 * **BDD:** [CucumberJS v10+](https://github.com/cucumber/cucumber-js)
 * **Performance:** [K6](https://k6.io/) com InfluxDB e Grafana via Docker.
 * **CI/CD:** GitHub Actions.
 
-### Estrutura de Pastas
+### 1.2 Estrutura de Pastas
 ```text
 kit-qa-outsera/
 ├── .github/workflows/   # Pipeline de CI/CD (GitHub Actions)
@@ -38,41 +38,49 @@ kit-qa-outsera/
 
 ---
 
-## Instalação e Dependências
+## 2. Instalação e Dependências
 
 Para executar este projeto localmente, necessitas de:
 
-1. **Node.js** (v18 ou superior)
+1. **Node.js** (v18 ou superior)  
 2. **Docker** (para os testes de carga com monitorização)
 
-### Instalação
+### 2.1 Instalação
 
-#### 1. Clonar o repositório:
-
+#### 2.1.1 Clonar o repositório:
 ```bash
-git clone [https://github.com/tiagonline/kit-qa-outsera.git](https://github.com/tiagonline/kit-qa-outsera.git)
+git clone https://github.com/tiagonline/kit-qa-outsera.git
 cd kit-qa-outsera
 ```
 
-#### 2. Instalar dependências:
-
+#### 2.1.2 Instalar dependências:
 ```bash
 npm install
 npx playwright install --with-deps
 ```
 
-#### 3. Segurança utilizando - Variáveis de Ambiente:
-Configura o ficheiro `.env` baseado no `.env.example` com o seu `GOREST_TOKEN`.
+---
 
-### 3.1 Go Rest
-- Acesse o site https://gorest.co.in/, faça login e crie um token.
-- Cole este token no seu parametro GOREST_TOKEN= do seu arquivo `.env` e salve.
+## 3. Segurança e Variáveis de Ambiente
 
-Nota: O token de autenticação não deve ser versionado. Por segurança, nas execuções do Github Actions o token foi embedado como secret.
+O projeto utiliza o ficheiro **.env** para gerir dados sensíveis e configurações de ambiente, garantindo que informações como credenciais de acesso não sejam versionadas.
+
+### 3.1 Configuração Local
+
+1. Crie um ficheiro **.env** na raiz do projeto baseado no **.env.example**.  
+2. Configure os seguintes parâmetros:
+   - `API_BASE_URL`: Define o endpoint da API (atualmente configurado para `https://jsonplaceholder.typicode.com`).  
+   - `SAUCE_USERNAME`: Usuário para os testes E2E (ex: `standard_user`).  
+   - `SAUCE_PASSWORD`: Senha para os testes E2E (ex: `secret_sauce`).  
+
+### 3.2 Segurança no CI/CD (GitHub Actions)
+
+Por boas práticas de segurança, o ficheiro **.env** não é enviado para o repositório (está no **.gitignore**).  
+Nas execuções do **GitHub Actions**, estas variáveis foram configuradas como **Secrets** do repositório, permitindo que a pipeline rode de forma segura sem expor dados sensíveis em logs públicos.
 
 ---
 
-## Como Executar os Testes
+## 4. Como Executar os Testes
 
 | Cenário              | Comando              |
 |----------------------|----------------------|
@@ -82,34 +90,31 @@ Nota: O token de autenticação não deve ser versionado. Por segurança, nas ex
 | Testes Mobile        | `npm run test:mobile`|
 | Teste de Performance | `npm run k6:run`     |
 
----
-
-### 🛠️ Como visualizar os relatórios:
-1. Vá até a aba **Actions** no GitHub.
-2. Selecione a última execução bem-sucedida.
-3. No final da página, descarregue os **Artifacts**.
+### 4.1 🛠️ Como visualizar os relatórios:
+1. Vá até a aba **Actions** no GitHub.  
+2. Selecione a última execução bem-sucedida.  
+3. No final da página, descarregue os **Artifacts**.  
 4. Extraia os arquivos e abra o `index.html` (Playwright) ou `cucumber-report.html` (E2E) no seu navegador preferido.
 
 ---
 
-## Relatórios e Evidências
+## 5. Relatórios e Evidências
 
-### **Playwright Report**
+### 5.1 Playwright Report
 
 Após os testes funcionais, o relatório HTML detalhado é gerado automaticamente.  
 Para visualizar:
-
 ```bash
 npx playwright show-report
 ```
 
 ---
 
-## Análise de Performance (Tarefa 2 – k6)
+## 6. Análise de Performance (Tarefa 2 – k6)
 
 O teste de carga foi executado utilizando **k6** e conteinerização com **Docker**, simulando um cenário de alta disponibilidade com **500 usuários simultâneos (VUs)**.
 
-### Resumo da Execução
+### 6.1 Resumo da Execução
 
 | Métrica                 | Resultado Obtido | Status                       |
 |--------------------------|------------------|------------------------------|
@@ -119,9 +124,7 @@ O teste de carga foi executado utilizando **k6** e conteinerização com **Docke
 | Requisições Falhas       | 0.41%            | ✅ Dentro do Limite (< 5%)   |
 | Total de Requisições     | 207.186          | ⚡ Alta Vazão                |
 
----
-
-### Infraestrutura de Monitoramento
+### 6.2 Infraestrutura de Monitoramento
 
 A solução foi implementada com uma stack de observabilidade completa:
 
@@ -129,9 +132,7 @@ A solução foi implementada com uma stack de observabilidade completa:
 - **InfluxDB:** Armazenamento de métricas em tempo real.  
 - **Grafana:** Dashboard para visualização de tendências e gargalos.  
 
----
-
-### Insights Técnicos e Identificação de Gargalos
+### 6.3 Insights Técnicos e Identificação de Gargalos
 
 1. **Conformidade de Thresholds:** Todos os critérios de aceitação (SLA) foram atingidos.  
    O tempo de resposta para 95% dos usuários (P95) ficou em **990ms**, bem abaixo do limite crítico de **2000ms**.
@@ -143,7 +144,7 @@ A solução foi implementada com uma stack de observabilidade completa:
 
 ---
 
-## Produção e Boas Práticas
+## 7. Produção e Boas Práticas
 
 Este projeto foi desenvolvido seguindo padrões de mercado para **produção**:
 
