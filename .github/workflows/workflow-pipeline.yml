@@ -1,4 +1,4 @@
-name: workflow-main-pipeline
+name: workflow-pipeline
 
 on:
   push:
