@@ -89,10 +89,10 @@ jobs:
       
       - name: Start Docker & Run Load Tests
         run: |
-          # 1. Sobe o Docker antes
-          npm run k6:up
+          # 1. Sobe APENAS InfluxDB e Grafana (infraestrutura)
+          docker compose -f tests/k6-load/docker-compose.yml up -d influxdb grafana
           
-          # 2. Roda o script de CI (que faz o build e run)
+          # 2. Roda o script de CI (Build local + Run local)
           npm run k6:ci -- --summary-export=k6-summary.json
         env:
           K6_BASE_URL: ${{ secrets.API_BASE_URL }}
