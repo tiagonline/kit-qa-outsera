@@ -10,15 +10,7 @@ test.describe.configure({ mode: "serial" });
 
 test.describe("API Tests - Quality Gate OutSera (JSONPlaceholder)", () => {
   
-  /**
-   * TAREFA 2: Uso de API_BASE_URL. 
-   * Forçamos a URL da JSONPlaceholder se o .env estiver com outra API,
-   * garantindo que os endpoints /posts existam (evita o 404).
-   */
-  const envURL = process.env.API_BASE_URL || "";
-  const API_BASE_URL = envURL.includes("jsonplaceholder") 
-    ? envURL 
-    : 'https://jsonplaceholder.typicode.com';
+  const API_BASE_URL = process.env.API_BASE_URL;
   
   let apiContext: APIRequestContext;
   let createdPostId: number;

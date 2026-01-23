@@ -77,19 +77,22 @@ npx playwright install --with-deps
 
 ## 3. Segurança e Variáveis de Ambiente
 
-O projeto utiliza o ficheiro **.env** para gerir dados sensíveis e configurações de ambiente, garantindo que informações como credenciais de acesso não sejam versionadas.
+O projeto utiliza o arquivo **.env** para gerir dados sensíveis e configurações de ambiente, garantindo que informações como credenciais de acesso não sejam versionadas e links possam ser ajustados facilmente num único lugar.
 
 ### 3.1 Configuração Local
 
-1. Crie um ficheiro **.env** na raiz do projeto baseado no **.env.example**.  
+1. Crie um arquivo **.env** dentro da pasta **envs** do projeto baseado no **.env.example**. 
+   Deixei já preenchido o exemplo, só duplicar.
 2. Configure os seguintes parâmetros:
-   - `API_BASE_URL`: Define o endpoint da API (atualmente configurado para `https://jsonplaceholder.typicode.com`).  
+   - `API_BASE_URL`: Define o endpoint da API (atualmente configurado para `https://jsonplaceholder.typicode.com`). 
+   - `BASE_URL`: Define o endpoint dos testes e2e (atualmente configurado para `https://www.saucedemo.com/`). 
    - `SAUCE_USERNAME`: Usuário para os testes E2E (ex: `standard_user`).  
    - `SAUCE_PASSWORD`: Senha para os testes E2E (ex: `secret_sauce`).  
+   - `K6_BASE_URL`: Define o endpoint dos testes de carga e performance do K6 (atualmente configurado para `https://httpbin.org`). 
 
 ### 3.2 Segurança no CI/CD (GitHub Actions)
 
-Por boas práticas de segurança, o ficheiro **.env** não é enviado para o repositório (está no **.gitignore**).  
+Por boas práticas de segurança, o arquivo **.env** não é enviado para o repositório (está no **.gitignore**).  
 Nas execuções do **GitHub Actions**, estas variáveis foram configuradas como **Secrets** do repositório, permitindo que a pipeline rode de forma segura sem expor dados sensíveis em logs públicos.
 
 > **Diferencial Técnico**: O pipeline foi otimizado com a estratégia de Multi-Jobs Paralelos. Isso significa que os testes de API, E2E, Mobile e Performance rodam em máquinas independentes e simultâneas, garantindo escalabilidade e um feedback muito mais rápido para o time de desenvolvimento.
@@ -98,13 +101,14 @@ Nas execuções do **GitHub Actions**, estas variáveis foram configuradas como 
 
 ## 4. Como Executar os Testes
 
-| Cenário              | Comando              |
-|----------------------|----------------------|
-| Executar Tudo (CI)   | `npm run test:all`   |
-| Testes de API        | `npm run test:api`   |
-| Testes Web (BDD)     | `npm run test:e2e`   |
-| Testes Mobile        | `npm run test:mobile`|
-| Teste de Performance | `npm run k6:run`     |
+| Cenário              | Comando                    |
+|----------------------|----------------------------|
+| Executar Tudo (CI)   | `npm run test:all`         |
+| Testes de API        | `npm run test:api`         |
+| Testes Web (BDD)     | `npm run test:e2e`         |
+| Testes Mobile        | `npm run test:mobile`      |
+| Teste de Performance | `npm run k6:run`           |
+| Modo Playwright      | `npx playwright test --ui` |
 
 ---
 
@@ -126,8 +130,7 @@ Após rodar os testes na sua máquina, os relatórios podem ser encontrados nos 
   - Local: `cucumber-report.html` (abrir diretamente no navegador)
 
 - **Performance (k6):**  
-  - Local: `k6-summary.json` (resumo técnico) ou via **Grafana**  
-    (`http://localhost:3000`) se o Docker ainda estiver ativo.
+  - Local: `k6-summary.json` (resumo técnico) ou veja a execução em tempo real no [Grafana](http://localhost:3000/d/outsera-load-test) enquanto estiver executando. Configurei para abrir o dash automaticamente quando for executado.
 
 ---
 

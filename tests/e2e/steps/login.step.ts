@@ -15,8 +15,8 @@ When('preencho as credenciais válidas', async function () {
    * Prioriza as variáveis do .env/GitHub Secrets. 
    * Se estiverem vazias ou apenas com espaços, o fallback garante o "standard_user".
    */
-  const username = (process.env.SAUCE_USERNAME && process.env.SAUCE_USERNAME.trim()) || "standard_user";
-  const password = (process.env.SAUCE_PASSWORD && process.env.SAUCE_PASSWORD.trim()) || "secret_sauce";
+  const username = (process.env.SAUCE_USERNAME && process.env.SAUCE_USERNAME.trim());
+  const password = (process.env.SAUCE_PASSWORD && process.env.SAUCE_PASSWORD.trim());
   
   await loginPage.login(username, password);
 });

@@ -18,8 +18,8 @@ test.describe("E2E Nativo | Fluxo de Compra SAUCE LABS", () => {
   let checkoutPage: CheckoutPage;
 
   // Credenciais via variáveis de ambiente para segurança
-  const VALID_USERNAME = process.env.SAUCE_USERNAME || "standard_user";
-  const VALID_PASSWORD = process.env.SAUCE_PASSWORD || "secret_sauce";
+  const VALID_USERNAME = process.env.SAUCE_USERNAME;
+  const VALID_PASSWORD = process.env.SAUCE_PASSWORD;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);

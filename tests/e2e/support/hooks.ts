@@ -15,7 +15,7 @@ let page: Page;
 // Roda 1 vez antes de tudo (Inicia o Browser)
 BeforeAll(async function () {
   browser = await chromium.launch({ 
-    headless: true, // Mude para false se quiser ver os testes rodando no browser
+    headless: false, // Mude para true se quiser modo headless
     args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"]
   });
 });
@@ -23,7 +23,7 @@ BeforeAll(async function () {
 // Roda 1 vez antes de CADA cenário (Cria a Aba/Página)
 Before(async function () {
   context = await browser.newContext({
-    baseURL: process.env.BASE_URL || "https://www.saucedemo.com/" 
+    baseURL: process.env.BASE_URL
   });
   
   page = await context.newPage();

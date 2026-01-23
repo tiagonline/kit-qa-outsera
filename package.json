@@ -4,17 +4,16 @@
   "version": "1.0.0",
   "scripts": {
     "postinstall": "npx playwright install --with-deps",
-    "test:api": "npx playwright test tests/api",
-    "test:e2e": "npx cucumber-js",
-    "test:mobile": "npx playwright test tests/mobile --project='Mobile Chrome'",
-    "test:extra": "npx playwright test tests/e2e/extra/checkout.native.spec.ts && npx playwright show-report",
-    "test:all": "npm run test:api && npm run test:e2e && npm run test:mobile && npm run k6:ci",
+    "test:api": "dotenv -e envs/.env -- npx playwright test tests/api",
+    "test:e2e": "dotenv -e envs/.env -- npx cucumber-js",
+    "test:mobile": "dotenv -e envs/.env.dev npx playwright test tests/mobile --project='Mobile Chrome'",
+    "test:extra": "dotenv -e envs/.env -- npx playwright test tests/e2e/extra/checkout.native.spec.ts && npx playwright show-report",
+    "test:all": "npm run test:api && npm run test:e2e && npm run test:mobile && npm run k6:run",
     "report:api": "npx playwright show-report",
     "k6:up": "docker compose -f tests/k6-load/docker-compose.yml up -d",
-    "k6:down": "docker compose -f tests/k6-load/docker-compose.yml down",
     "k6:build": "webpack --config tests/k6-load/webpack.config.js",
-    "k6:run": "npm run k6:up && npm run k6:build && k6 run tests/k6-load/dist/outsera.test.js --out influxdb=http://localhost:8086/k6",
-    "k6:ci": "npm run k6:run -- --summary-export=k6-summary.json && npm run k6:down",
+    "k6:run": "dotenv -e envs/.env.dev -- bash -c 'npm run k6:up && npm run k6:build && echo \"Aguardando Grafana...\" && sleep 5 && (command -v explorer.exe >/dev/null && explorer.exe http://localhost:3000/d/outsera-load-test || xdg-open http://localhost:3000/d/outsera-load-test || open http://localhost:3000/d/outsera-load-test || true) && k6 run -e K6_BASE_URL=$K6_BASE_URL tests/k6-load/dist/outsera.test.js --out influxdb=http://localhost:8086/k6'",
+    "k6:down": "docker compose -f tests/k6-load/docker-compose.yml down",
     "format": "prettier --write \"**/*.{ts,js,json,yml,md}\"",
     "lint": "eslint . --ext .ts",
     "ci": "npm run format && npm run lint && npm run test:all",
@@ -49,6 +48,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "core-js": "^3.34.0",
     "dotenv": "^16.3.1",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^8.55.0",
     "k6": "^0.0.0",
     "prettier": "^3.1.0",
@@ -57,6 +57,5 @@
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0"
-  },
-  "dependencies": {}
+  }
 }

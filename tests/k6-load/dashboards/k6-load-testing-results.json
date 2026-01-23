@@ -50,7 +50,7 @@
   "graphTooltip": 2,
   "hideControls": false,
   "id": null,
-  "uid": "k6",
+  "uid": "outsera-load-test",
   "links": [],
   "refresh": "5s",
   "rows": [

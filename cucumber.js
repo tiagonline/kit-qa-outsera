@@ -12,9 +12,6 @@ module.exports = {
     require: ["tests/e2e/steps/**/*.ts", "tests/e2e/support/**/*.ts"],
     
     // Define o formato de saída: barra de progresso no console e relatório visual em HTML
-    format: ["progress-bar", "html:cucumber-report.html"],
-    
-    // Inibe as mensagens desnecessárias do servidor do Cucumber na execução do log
-    publishQuiet: true,
+    format: ["progress-bar", "html:cucumber-report.html"]
   },
 };
