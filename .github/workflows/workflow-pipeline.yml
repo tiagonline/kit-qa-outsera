@@ -73,7 +73,7 @@ jobs:
           name: mobile-report
           path: playwright-report/
 
-  # --- JOB 4: LOAD TESTS (K6) ---
+# --- JOB 4: LOAD TESTS (K6) ---
   load-tests:
     name: Performance Testing
     runs-on: ubuntu-latest
@@ -83,19 +83,24 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
+      
       - name: Setup K6
         uses: grafana/setup-k6-action@v1
+      
       - name: Start Docker & Run Load Tests
         run: |
+          # 1. Sobe o Docker antes
           npm run k6:up
-          mkdir -p tests/k6-load/dist
-          sudo chmod -R 777 tests/k6-load/dist
-          npm run k6:run -- --summary-export=k6-summary.json
+          
+          # 2. Roda o script de CI (que faz o build e run)
+          npm run k6:ci -- --summary-export=k6-summary.json
         env:
-          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          K6_BASE_URL: ${{ secrets.API_BASE_URL }}
+      
       - name: Stop Docker
         if: always()
         run: npm run k6:down
+        
       - uses: actions/upload-artifact@v4
         if: always()
         with:
