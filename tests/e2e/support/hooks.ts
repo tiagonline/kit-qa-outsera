@@ -12,11 +12,16 @@ let browser: Browser;
 let context: BrowserContext;
 let page: Page;
 
-// Roda 1 vez antes de tudo (Inicia o Browser)
 BeforeAll(async function () {
+  // Verifica se está rodando no GitHub Actions
+  const isCI = process.env.CI === 'true';
+
   browser = await chromium.launch({ 
-    // Se HEADLESS for undefined, !== 'false' é TRUE. O navegador NÃO abre.
-    headless: process.env.HEADLESS !== 'false',
+    // 1. Se for CI (isCI), FORÇA headless (true) e ignora o arquivo .env
+    // 2. Se for Local, respeita o .env (HEADLESS !== 'false')
+    headless: isCI ? true : process.env.HEADLESS !== 'false',
+    
+    // Argumentos de segurança
     args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"]
   });
 });
