@@ -9,7 +9,7 @@ export let postReqs = new Rate("_2_reqs_post");
 export let postSuccessRate = new Rate("_3_success_rate_post");
 export let postFailRate = new Rate("_4_fail_rate_post");
 
-export default class PostAnything {
+export default class postRequest {
   post() {
     let params = {
       headers: {

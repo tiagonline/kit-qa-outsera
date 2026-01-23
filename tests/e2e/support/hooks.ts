@@ -15,7 +15,8 @@ let page: Page;
 // Roda 1 vez antes de tudo (Inicia o Browser)
 BeforeAll(async function () {
   browser = await chromium.launch({ 
-    headless: false, // Mude para true se quiser modo headless
+    // Se HEADLESS for undefined, !== 'false' é TRUE. O navegador NÃO abre.
+    headless: process.env.HEADLESS !== 'false',
     args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"]
   });
 });

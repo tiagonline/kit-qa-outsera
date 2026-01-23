@@ -1,6 +1,6 @@
 import { group } from "k6";
-import GetAnything from "../requests/getAnything.request";
-import PostAnything from "../requests/postAntything.request";
+import getRequest from "../requests/getRequest";
+import postRequest from "../requests/postRequest";
 
 export let options = {
   // Configuração para simular 500 VUs por 5 minutos
@@ -16,8 +16,8 @@ export let options = {
 };
 
 export default function () {
-  let getParams = new GetAnything();
-  let postParams = new PostAnything();
+  let getParams = new getRequest();
+  let postParams = new postRequest();
 
   group("GET - Consulta Geral", () => {
     getParams.get();

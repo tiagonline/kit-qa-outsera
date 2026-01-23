@@ -9,7 +9,7 @@ export let getReqs = new Rate("_2_reqs");
 export let getSuccessRate = new Rate("_3_success_rate");
 export let getFailRate = new Rate("_4_fail_rate");
 
-export default class GetAnything {
+export default class getRequest {
   get() {
     let res = http.get(`${BASE_URL}/get`); 
 
