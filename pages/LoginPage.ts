@@ -9,7 +9,6 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    // Seletores estáveis usando data-test conforme requisitos da Tarefa 3
     this.usernameInput = page.locator('[data-test="username"]');
     this.passwordInput = page.locator('[data-test="password"]');
     this.loginButton = page.locator('[data-test="login-button"]');
@@ -17,36 +16,27 @@ export class LoginPage {
   }
 
   async goto() {
-    // Acessa a URL base configurada no projeto
     await this.page.goto("/");
   }
 
-  /**
-   * Método de Ação: Login
-   * Gerencia o preenchimento, clique e aguarda a transição de página
-   */
   async login(username: string, password: string) {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
-    await this.loginButton.click();
-
-    // Sincronismo inteligente:
-    // Se não houver erro imediato, aguarda o redirecionamento para a vitrine.
-    // O catch evita que o teste trave em cenários de login inválido.
-    const hasError = await this.errorMessage.isVisible({ timeout: 500 }).catch(() => false);
     
-    if (!hasError) {
-      await this.page.waitForURL(/.*inventory.html/, { timeout: 5000 }).catch(() => {
-        // Log silencioso caso seja um cenário de teste negativo
-      });
-    }
+    // Clica e espera a URL mudar.
+    // Se for um teste negativo, o Playwright vai esperar, mas o Step de erro 
+    // vai agir logo em seguida, então não trava o fluxo.
+    await this.loginButton.click();
+    
+    // Aguarda a URL de sucesso de forma simples
+    await this.page.waitForURL(/.*inventory.html/, { timeout: 3000 }).catch(() => {
+      // Silenciei apenas para não quebrar os testes de "Login Inválido", ou seja, 
+      // se em 3 segundos a URL não mudar para inventory, tudo bem, não dê erro, 
+      // apenas siga para o próximo passo
+    });
   }
 
-  /**
-   * Método de Validação: Verifica a mensagem de erro
-   */
   async validateErrorMessage(message: string) {
-    await expect(this.errorMessage).toBeVisible();
     await expect(this.errorMessage).toContainText(message);
   }
 }

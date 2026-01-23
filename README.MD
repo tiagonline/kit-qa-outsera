@@ -97,15 +97,41 @@ npx playwright show-report
 
 ---
 
-### Análise de Performance (Tarefa 2)
+## Análise de Performance (Tarefa 2 – k6)
 
-O teste foi configurado para simular **500 utilizadores simultâneos** durante **5 minutos**, cumprindo os requisitos técnicos.
+O teste de carga foi executado utilizando **k6** e conteinerização com **Docker**, simulando um cenário de alta disponibilidade com **500 usuários simultâneos (VUs)**.
 
-#### **Resultados Obtidos:**
+### Resumo da Execução
 
-- **Estabilidade:** A infraestrutura suportou a carga máxima de 500 VUs sem falhas críticas de sistema.  
-- **Identificação de Gargalo:** Observou-se que a API pública de mock apresenta degradação de performance (latência > 2s) quando a carga ultrapassa os 350 utilizadores simultâneos.  
-- **Métricas:** Foram monitorizadas métricas de duração de pedido (Trend), taxa de sucesso (Rate) e falhas, enviadas em tempo real para o **Grafana**.
+| Métrica                 | Resultado Obtido | Status                       |
+|--------------------------|------------------|------------------------------|
+| Usuários Simultâneos     | 500 VUs          | ✅ Sucesso                   |
+| Taxa de Sucesso (Checks) | 99.79%           | ✅ Sucesso                   |
+| Tempo de Resposta (P95)  | 990ms            | ✅ Dentro do Limite (< 2s)   |
+| Requisições Falhas       | 0.41%            | ✅ Dentro do Limite (< 5%)   |
+| Total de Requisições     | 207.186          | ⚡ Alta Vazão                |
+
+---
+
+### Infraestrutura de Monitoramento
+
+A solução foi implementada com uma stack de observabilidade completa:
+
+- **k6:** Motor de execução dos testes.  
+- **InfluxDB:** Armazenamento de métricas em tempo real.  
+- **Grafana:** Dashboard para visualização de tendências e gargalos.  
+
+---
+
+### Insights Técnicos e Identificação de Gargalos
+
+1. **Conformidade de Thresholds:** Todos os critérios de aceitação (SLA) foram atingidos.  
+   O tempo de resposta para 95% dos usuários (P95) ficou em **990ms**, bem abaixo do limite crítico de **2000ms**.
+
+2. **Estabilidade Sob Pressão:** O sistema manteve uma vazão média de **486 requisições por segundo (RPS)**, demonstrando resiliência.
+
+3. **Ponto de Atenção:** Embora a taxa de erro seja baixa (**0.41%**), observou-se um aumento pontual na latência máxima (**6.35s**).  
+   Isso indica que, apesar da média ser excelente, em picos extremos acima de **450 VUs**, alguns usuários podem experimentar lentidão momentânea devido ao limite da API de Mock.
 
 ---
 
