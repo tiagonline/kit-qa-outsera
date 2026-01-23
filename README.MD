@@ -110,7 +110,7 @@ Em um cenário real de produção:
 Por boas práticas de segurança, o arquivo **.env** não é enviado para o repositório (está no **.gitignore**).  
 Nas execuções do **GitHub Actions**, estas variáveis foram configuradas como **Secrets** do repositório, permitindo que a pipeline rode de forma segura sem expor dados sensíveis em logs públicos.
 
-> **Diferencial Técnico**: O pipeline foi otimizado com a estratégia de Multi-Jobs Paralelos. Isso significa que os testes de API, E2E, Mobile e Performance rodam em máquinas independentes e simultâneas, garantindo escalabilidade e um feedback muito mais rápido para o time de desenvolvimento.
+> **Diferencial Técnico**: O pipeline foi otimizado para rodar os jobs em paralelos. Isso significa que os testes de API, E2E, Mobile e Performance rodam em máquinas independentes e simultâneas, garantindo escalabilidade e um feedback muito mais rápido para o time de desenvolvimento.
 
 ---
 
