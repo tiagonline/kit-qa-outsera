@@ -77,18 +77,33 @@ npx playwright install --with-deps
 
 ## 3. Segurança e Variáveis de Ambiente
 
-O projeto utiliza o arquivo **.env** para gerir dados sensíveis e configurações de ambiente, garantindo que informações como credenciais de acesso não sejam versionadas e links possam ser ajustados facilmente num único lugar.
+O projeto utiliza a pasta `envs/` para gerenciar configurações de ambiente, garantindo que dados sensíveis e URLs sejam centralizados e fáceis de ajustar.
 
 ### 3.1 Configuração Local
 
-1. Crie um arquivo **.env** dentro da pasta **envs** do projeto baseado no **.env.example**. 
-   Deixei já preenchido o exemplo, só duplicar.
-2. Configure os seguintes parâmetros:
-   - `API_BASE_URL`: Define o endpoint da API (atualmente configurado para `https://jsonplaceholder.typicode.com`). 
-   - `BASE_URL`: Define o endpoint dos testes e2e (atualmente configurado para `https://www.saucedemo.com/`). 
-   - `SAUCE_USERNAME`: Usuário para os testes E2E (ex: `standard_user`).  
-   - `SAUCE_PASSWORD`: Senha para os testes E2E (ex: `secret_sauce`).  
-   - `K6_BASE_URL`: Define o endpoint dos testes de carga e performance do K6 (atualmente configurado para `https://httpbin.org`). 
+Para facilitar a avaliação, o arquivo `.env.dev` já foi incluído no repositório com as configurações necessárias. O fluxo padrão de configuração seria:
+
+1. Localizar o arquivo de exemplo `.env.example` dentro da pasta `envs`.
+2. Duplicá-lo renomeando para `.env.dev`.
+3. As variáveis principais configuradas são:
+
+- **API_BASE_URL**: Endpoint da API (Padrão: `https://jsonplaceholder.typicode.com`).
+- **BASE_URL**: Endpoint dos testes E2E (Padrão: `https://www.saucedemo.com/`).
+- **SAUCE_USERNAME / SAUCE_PASSWORD**: Credenciais para os testes de Login e Checkout.
+- **K6_BASE_URL**: Endpoint para os testes de carga K6 (Padrão: `https://httpbin.org`).
+- **HEADLESS=false**: Define a visibilidade do navegador.
+  - `false`: Abre o navegador visualmente (ideal para debug local).
+  - `true`: Roda em background (ideal para CI/CD).
+
+> **Nota sobre Segurança e Arquivos .env**
+
+Neste repositório, os arquivos de configuração de ambiente (`envs/.env.dev`, etc.) foram intencionalmente commitados para facilitar a execução e avaliação do projeto por parte da equipe técnica.
+
+Em um cenário real de produção:
+
+1. Estes arquivos estariam listados no `.gitignore`.
+2. Apenas o `.env.example` seria versionado.
+3. As variáveis sensíveis seriam injetadas via **CI/CD Secrets** (GitHub Actions, Vault, etc.) durante o pipeline.
 
 ### 3.2 Segurança no CI/CD (GitHub Actions)
 
@@ -148,7 +163,7 @@ Para visualizá-los:
    -  **mobile-report:** Evidências de responsividade mobile.  
    -  **k6-report:** Métricas de performance e carga.
    
-#### **Nota:** Todos os relatórios HTML podem ser visualizados descompactando o `.zip` e abrindo o `.html` pelo navegador.
+> **Nota:** Todos os relatórios HTML podem ser visualizados descompactando o `.zip` e abrindo o `.html` pelo navegador.
 
 ---
 
@@ -215,7 +230,7 @@ O projeto foi desenhado para ser agnóstico ao ambiente, permitindo a alternar e
 
 - **Ambiente de PRD:** Execução seletiva de Smoke Tests (utilizando a tag @smoke), focando na disponibilidade dos serviços críticos (Happy Paths) sem gerar poluição de dados ou consumo desnecessário de recursos.
 
-#### **Nota:** sobre CI/CD: Enquanto localmente utilizamos a pasta envs/ para alternar contextos, em ambiente de CI (GitHub Actions), as variáveis são injetadas de forma segura via Repository Secrets, garantindo que nenhum dado sensível precise estar versionado no repositório.
+> **Nota:** sobre CI/CD: Enquanto localmente utilizamos a pasta envs/ para alternar contextos, em ambiente de CI (GitHub Actions), as variáveis são injetadas de forma segura via Repository Secrets, garantindo que nenhum dado sensível precise estar versionado no repositório.
 
 ---
 
