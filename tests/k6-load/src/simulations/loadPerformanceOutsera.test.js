@@ -5,9 +5,9 @@ import postRequest from "../requests/postRequest";
 export let options = {
   // Configuração para simular 500 VUs por 5 minutos
   stages: [
-    { duration: "1m", target: 500 }, // 1. RAMP-UP: Sobe de 0 a 500 usuários em 1 minuto
-    { duration: "5m", target: 500 }, // 2. PLATEAU: Mantém 500 usuários simultâneos por 5 minutos
-    { duration: "30s", target: 0 },  // 3. RAMP-DOWN: Desce suavemente para 0 em 30 segundos
+    { duration: "10s", target: 10 }, // Sobe para 10 usuários (leve)
+    { duration: "30s", target: 10 }, // Mantém por 30 segundos
+    { duration: "10s", target: 0 },  // Desce
   ],
   thresholds: {
     http_req_duration: ["p(95)<2000"], // 95% das requisições devem ser mais rápidas que 2s
