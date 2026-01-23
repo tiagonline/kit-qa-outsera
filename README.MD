@@ -84,6 +84,14 @@ Nota: O token de autenticação não deve ser versionado. Por segurança, nas ex
 
 ---
 
+### 🛠️ Como visualizar os relatórios:
+1. Vá até a aba **Actions** no GitHub.
+2. Selecione a última execução bem-sucedida.
+3. No final da página, descarregue os **Artifacts**.
+4. Extraia os arquivos e abra o `index.html` (Playwright) ou `cucumber-report.html` (E2E) no seu navegador preferido.
+
+---
+
 ## Relatórios e Evidências
 
 ### **Playwright Report**
