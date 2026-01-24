@@ -8,7 +8,7 @@ import { faker } from "@faker-js/faker";
 
 dotenv.config();
 
-// Configura para rodar em série se um falhar
+// Configuro para rodar em série se um falhar
 test.describe.configure({ mode: 'serial' });
 
 test.describe("E2E Nativo | Fluxo de Compra SAUCE LABS", () => {
@@ -17,7 +17,7 @@ test.describe("E2E Nativo | Fluxo de Compra SAUCE LABS", () => {
   let cartPage: CartPage;
   let checkoutPage: CheckoutPage;
 
-  // Credenciais via variáveis de ambiente para segurança
+  // Credenciais por variáveis de ambiente
   const VALID_USERNAME = process.env.SAUCE_USERNAME;
   const VALID_PASSWORD = process.env.SAUCE_PASSWORD;
 

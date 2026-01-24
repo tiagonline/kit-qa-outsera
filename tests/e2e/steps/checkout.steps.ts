@@ -52,7 +52,7 @@ Then('devo ver a mensagem de confirmação {string}', async function (mensagem) 
   await expect(header).toContainText(mensagem);
 });
 
-// --- Steps para o Cenário Negativo (Tarefa 2) ---
+// Steps para o Cenário Negativo (Tarefa 2)
 
 When('tento continuar sem preencher o formulário', async function () {
   // Clica em continue sem preencher nada

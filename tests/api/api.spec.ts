@@ -1,100 +1,94 @@
-import { test, expect, APIRequestContext } from "@playwright/test";
-import * as dotenv from "dotenv";
-import { fakerPT_BR as faker } from "@faker-js/faker";
+import { test, expect, APIRequestContext } from '@playwright/test';
+import { faker } from '@faker-js/faker';
 
-// 1. Boas Práticas: Carregamento de variáveis de ambiente
-dotenv.config();
-
-// Configuração para execução serial (importante para manter a ordem do CRUD)
-test.describe.configure({ mode: "serial" });
-
-test.describe("API Tests - Quality Gate OutSera (JSONPlaceholder)", () => {
-  
-  const API_BASE_URL = process.env.API_BASE_URL;
-  
+test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos', () => {
   let apiContext: APIRequestContext;
   let createdPostId: number;
-
-  // Massa de dados dinâmica com FAKER (Tarefa 1)
+  
+  // Dados dinâmicos gerados pelo Faker
   const fakeTitle = faker.lorem.sentence();
   const fakeBody = faker.lorem.paragraph();
+  const fakeUserId = faker.number.int({ min: 1, max: 100 });
+  
+  // Dados para atualização (PUT)
+  const updatedTitle = faker.lorem.sentence();
+  const updatedBody = faker.lorem.paragraph();
 
   test.beforeAll(async ({ playwright }) => {
-    // Crio um contexto isolado para evitar bloqueios de rede e headers "sujos"
     apiContext = await playwright.request.newContext({
-      baseURL: API_BASE_URL,
-      extraHTTPHeaders: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Playwright/Automation'
-      }
+      baseURL: process.env.API_BASE_URL
     });
-    console.log(`[INFO] Testando API em: ${API_BASE_URL}`);
   });
 
   test.afterAll(async () => {
     await apiContext.dispose();
   });
 
-  // ==========================================
   // CENÁRIOS POSITIVOS (CRUD)
-  // ==========================================
-  test.describe("Cenários Positivos - Fluxo Completo (CRUD)", () => {
 
-    test("POST /posts - Criar recurso com dados válidos", async () => {
-      const response = await apiContext.post(`/posts`, {
-        data: { title: fakeTitle, body: fakeBody, userId: 1 }
-      });
-
-      // Validação de Status (Tarefa 1)
-      expect(response.status()).toBe(201);
-
-      // Validação de Corpo e Headers (Tarefa 2)
-      const body = await response.json();
-      expect(body.title).toBe(fakeTitle);
-      expect(body).toHaveProperty("id");
-      expect(response.headers()['content-type']).toContain('application/json');
-      
-      createdPostId = body.id; // Guardo os id para os próximos passos
+  test('POST /posts - Deve criar uma nova postagem com dados dinâmicos', async () => {
+    const response = await apiContext.post('/posts', {
+      data: {
+        title: fakeTitle,
+        body: fakeBody,
+        userId: fakeUserId,
+      },
     });
 
-    test("GET /posts/1 - Consultar recurso existente", async () => {
-      const response = await apiContext.get(`/posts/1`);
-      
-      expect(response.status()).toBe(200);
-      const body = await response.json();
-      
-      // Validação de corpo (Tarefa 1)
-      expect(body).toHaveProperty("id", 1);
-      expect(body).toHaveProperty("title");
-    });
+    expect(response.status()).toBe(201);
+    const headers = response.headers();
+    expect(headers['content-type']).toContain('application/json');
 
-    test("PUT /posts/1 - Atualizar recurso integralmente", async () => {
-      const response = await apiContext.put(`/posts/1`, {
-        data: { 
-            id: 1, 
-            title: "Update OutSera", 
-            body: fakeBody, 
-            userId: 1 
-        }
-      });
+    const responseBody = await response.json();
+    console.log('ID Gerado:', responseBody.id);
 
-      expect(response.status()).toBe(200);
-      const body = await response.json();
-      expect(body.title).toBe("Update OutSera");
-    });
+    expect(responseBody).toHaveProperty('id');
+    expect(responseBody.title).toBe(fakeTitle);
+    expect(responseBody.body).toBe(fakeBody);
+    expect(responseBody.userId).toBe(fakeUserId);
 
-    test("DELETE /posts/1 - Remover recurso", async () => {
-      const response = await apiContext.delete(`/posts/1`);
-      // JSONPlaceholder retorna 200 no sucesso do DELETE
-      expect(response.status()).toBe(200);
-    });
+    createdPostId = responseBody.id;
   });
 
-  // ==========================================
-  // CENÁRIOS NEGATIVOS (TESTES DE EXCEÇÃO)
-  // ==========================================
-  test.describe("Cenários Negativos - Validação de Robustez", () => {
+  test('GET /posts/:id - Deve consultar a postagem criada', async () => {
+    // Fallback para 1 caso o ID seja > 100 (limitação do JSONPlaceholder)
+    const idToTest = (createdPostId > 100) ? 1 : createdPostId; 
+
+    const response = await apiContext.get(`/posts/${idToTest}`);
+    expect(response.status()).toBe(200);
+
+    const responseBody = await response.json();
+    expect(responseBody).toHaveProperty('id', idToTest);
+  });
+
+  test('PUT /posts/:id - Deve atualizar a postagem integralmente', async () => {
+    const idToTest = (createdPostId > 100) ? 1 : createdPostId;
+
+    const response = await apiContext.put(`/posts/${idToTest}`, {
+      data: {
+        id: idToTest,
+        title: updatedTitle,
+        body: updatedBody,
+        userId: fakeUserId,
+      },
+    });
+
+    expect(response.status()).toBe(200);
+    const responseBody = await response.json();
+    expect(responseBody.title).toBe(updatedTitle);
+    expect(responseBody.body).toBe(updatedBody);
+  });
+
+  test('DELETE /posts/:id - Deve remover a postagem', async () => {
+    const idToTest = (createdPostId > 100) ? 1 : createdPostId;
+    
+    const response = await apiContext.delete(`/posts/${idToTest}`);
+    expect(response.status()).toBe(200);
+  });
+
+  // CENÁRIOS NEGATIVOS
+
+  test.describe("Cenários Negativos", () => {
 
     test("GET /posts/999999 - ID Inexistente (404)", async () => {
       const response = await apiContext.get(`/posts/999999`);
@@ -106,8 +100,8 @@ test.describe("API Tests - Quality Gate OutSera (JSONPlaceholder)", () => {
         headers: { 'Content-Type': 'application/json' },
         data: "{ payload_quebrado: " // String que não é um JSON válido
       });
-      // Validamos que a API não deve quebrar (esperamos erro de cliente ou sucesso ignorando o lixo)
-      expect(response.status()).toBeDefined();
+      // Aceito 201 (comportamento permissivo do JSONPlaceholder) ou 400/500 (API Real)
+      expect([201, 400, 500]).toContain(response.status());
     });
 
     test("GET /invalid-route - Rota Inexistente", async () => {
@@ -116,15 +110,22 @@ test.describe("API Tests - Quality Gate OutSera (JSONPlaceholder)", () => {
     });
 
     test("Simulação de Falha de Autenticação (Header Inválido)", async ({ playwright }) => {
-        // Crio um contexto com token inválido para validar o comportamento
+        // Crio contexto isolado para testar auth sem afetar os outros testes
         const authContext = await playwright.request.newContext({
+            baseURL: process.env.API_BASE_URL,
             extraHTTPHeaders: { 'Authorization': 'Bearer TOKEN_EXPIRADO_TESTE' }
         });
-        const response = await authContext.get(`${API_BASE_URL}/posts/1`);
         
-        // JSONPlaceholder é aberta, então retorna 200, mas o teste valida a chamada
-        expect(response.status()).toBe(200); 
+        // Tentativa de acesso
+        const response = await authContext.get(`/posts/1`);
+        
+        // JSONPlaceholder é público, então retorna 200.
+        // Em uma API real privada, esperaríamos 401 ou 403.
+        // Aqui valido apenas que a requisição completou.
+        expect([200, 401, 403]).toContain(response.status()); 
+        
         await authContext.dispose();
     });
   });
+
 });

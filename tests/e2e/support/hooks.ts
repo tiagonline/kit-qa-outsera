@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 // Garante que as variáveis foram carregadas
 dotenv.config();
 
-// Aumenta o timeout padrão para 30s (caso a net esteja lenta)
+// Aumento o timeout padrão para 30s (caso a net esteja lenta)
 setDefaultTimeout(30 * 1000);
 
 let browser: Browser;
@@ -13,7 +13,7 @@ let context: BrowserContext;
 let page: Page;
 
 BeforeAll(async function () {
-  // Verifica se está rodando no GitHub Actions
+  // Verifico se está rodando no GitHub Actions
   const isCI = process.env.CI === 'true';
 
   browser = await chromium.launch({ 

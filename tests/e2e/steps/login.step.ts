@@ -12,8 +12,7 @@ Given('que estou na página de login', async function () {
 When('preencho as credenciais válidas', async function () {
   /**
    * TAREFA 3: Gestão de Massa de Dados e Variáveis de Ambiente.
-   * Prioriza as variáveis do .env/GitHub Secrets. 
-   * Se estiverem vazias ou apenas com espaços, o fallback garante o "standard_user".
+   * Utilizo as variáveis do .env/GitHub Secrets. 
    */
   const username = (process.env.SAUCE_USERNAME && process.env.SAUCE_USERNAME.trim());
   const password = (process.env.SAUCE_PASSWORD && process.env.SAUCE_PASSWORD.trim());
@@ -32,7 +31,7 @@ Then('devo ver a mensagem de erro {string}', async function (mensagem) {
 Then('devo ser redirecionado para a vitrine de produtos', async function () {
   /**
    * Validação de redirecionamento com Regex.
-   * Aumentamos o timeout para 10 segundos para suportar variações de performance no CI/CD.
+   * Aumentei o timeout para 10 segundos para suportar variações de performance no CI/CD.
    */
   await expect(this.page).toHaveURL(/.*inventory\.html/, { timeout: 10000 });
 });
