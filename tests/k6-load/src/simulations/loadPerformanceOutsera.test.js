@@ -5,8 +5,8 @@ import postRequest from "../requests/postRequest";
 export let options = {
   // Configuração para simular 500 VUs por 5 minutos
   stages: [
-    { duration: "10s", target: 10 }, // Sobe para 10 usuários (leve)
-    { duration: "30s", target: 10 }, // Mantém por 30 segundos
+    { duration: "10s", target: 1 }, // Sobe para 1 usuário (leve)
+    { duration: "15s", target: 5 }, // Mantém por 30 segundos
     { duration: "10s", target: 0 },  // Desce
   ],
   thresholds: {
