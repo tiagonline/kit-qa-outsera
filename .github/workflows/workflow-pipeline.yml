@@ -92,7 +92,7 @@ jobs:
           docker compose -f tests/k6-load/docker-compose.yml up -d influxdb grafana
           npm run k6:ci -- --summary-export=k6-summary.json
         env:
-          K6_BASE_URL: "https://httpbin.org"
+          K6_BASE_URL: ${{ secrets.K6_BASE_URL }}
       
       - name: Stop Docker
         if: always()
