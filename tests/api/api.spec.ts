@@ -20,7 +20,7 @@ test.describe("API Tests - Quality Gate OutSera (JSONPlaceholder)", () => {
   const fakeBody = faker.lorem.paragraph();
 
   test.beforeAll(async ({ playwright }) => {
-    // Criamos um contexto isolado para evitar bloqueios de rede e headers "sujos"
+    // Crio um contexto isolado para evitar bloqueios de rede e headers "sujos"
     apiContext = await playwright.request.newContext({
       baseURL: API_BASE_URL,
       extraHTTPHeaders: {
@@ -55,7 +55,7 @@ test.describe("API Tests - Quality Gate OutSera (JSONPlaceholder)", () => {
       expect(body).toHaveProperty("id");
       expect(response.headers()['content-type']).toContain('application/json');
       
-      createdPostId = body.id; // Guardamos para os próximos passos
+      createdPostId = body.id; // Guardo os id para os próximos passos
     });
 
     test("GET /posts/1 - Consultar recurso existente", async () => {
