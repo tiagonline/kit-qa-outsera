@@ -16,6 +16,7 @@ export let options = {
 };
 
 export default function () {
+  console.log(`[DEBUG] URL Base sendo usada: ${__ENV.K6_BASE_URL}`);
   let getParams = new getRequest();
   let postParams = new postRequest();
 
