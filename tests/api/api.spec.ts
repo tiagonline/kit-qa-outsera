@@ -1,6 +1,32 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 
+/*
+ * Suite de Testes de API - JSONPlaceholder
+ * 
+ * Este arquivo contém testes abrangentes para validar:
+ * 
+ * CRUD COMPLETO:
+ * - POST: Criação de novos recursos
+ * - GET: Leitura de recursos (individual e com filtros)
+ * - PUT: Atualização completa de recursos
+ * - PATCH: Atualização parcial de recursos
+ * - DELETE: Remoção de recursos
+ * 
+ * VALIDAÇÕES ADICIONAIS:
+ * - Query parameters (filtros)
+ * - Tempo de resposta (performance)
+ * - Validação de schema (estrutura e tipos)
+ * - Headers de resposta
+ * 
+ * CENÁRIOS NEGATIVOS:
+ * - Recursos inexistentes (404)
+ * - Payloads malformados
+ * - Campos obrigatórios faltando
+ * - Rotas inválidas
+ * - Simulação de falhas de autenticação
+ */
+
 // Roda os testes de API em série para evitar conflitos de estado no CRUD
 test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos', () => {
   let apiContext: APIRequestContext;
@@ -85,6 +111,8 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
     expect(responseBody.body).toBe(updatedBody);
   });
 
+  // --- TESTES ADICIONAIS DE COBERTURA ---
+
   test('PATCH /posts/:id - Deve atualizar parcialmente a postagem', async () => {
     const idToTest = (createdPostId > 100) ? 1 : createdPostId;
     const partialTitle = faker.lorem.sentence();
@@ -151,7 +179,7 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
     expect(response.status()).toBe(200);
   });
 
-  // CENÁRIOS NEGATIVOS
+  // CENÁRIOS NEGATIVOS ADICIONAIS
 
   test.describe("Cenários Negativos", () => {
 
