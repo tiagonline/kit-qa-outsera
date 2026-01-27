@@ -49,11 +49,12 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
 
   test.afterAll(async () => {
     await apiContext.dispose();
-    /*Aqui é a boa prática de fechar a porta quando sai. 
-    O .dispose() mata a conexão e libera a memória que o contexto estava usando. 
-    Em testes pequenos não faz tanta diferença, mas em pipelines grandes, 
-    se você não limpar os recursos, pode estourar a memória do servidor de CI.
-    */
+    /*
+     * Aqui é a boa prática de fechar a porta quando sai. 
+     * O .dispose() mata a conexão e libera a memória que o contexto estava usando. 
+     * Em testes pequenos não faz tanta diferença, mas em pipelines grandes, 
+     * se você não limpar os recursos, pode estourar a memória do servidor de CI.
+     */
   });
 
   // CENÁRIOS POSITIVOS (CRUD)
@@ -183,6 +184,9 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
 
   test.describe("Cenários Negativos", () => {
 
+    // Constante para payload malformado usado em testes
+    const MALFORMED_JSON = "{ payload_quebrado: ";
+
     test("GET /posts/999999 - ID Inexistente (404)", async () => {
       const response = await apiContext.get(`/posts/999999`);
       expect(response.status()).toBe(404);
@@ -191,7 +195,7 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
     test("POST /posts - Payload Malformado", async () => {
       const response = await apiContext.post(`/posts`, {
         headers: { 'Content-Type': 'application/json' },
-        data: "{ payload_quebrado: " // String que não é um JSON válido
+        data: MALFORMED_JSON // String que não é um JSON válido
       });
       // Aceito 201 (comportamento permissivo do JSONPlaceholder) ou 400/500 (API Real)
       expect([201, 400, 500]).toContain(response.status());
