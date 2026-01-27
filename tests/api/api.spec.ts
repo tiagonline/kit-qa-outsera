@@ -1,6 +1,7 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 
+// Roda os testes de API em série para evitar conflitos de estado no CRUD
 test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos', () => {
   let apiContext: APIRequestContext;
   let createdPostId: number;
@@ -22,6 +23,11 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
 
   test.afterAll(async () => {
     await apiContext.dispose();
+    /*Aqui é a boa prática de fechar a porta quando sai. 
+    O .dispose() mata a conexão e libera a memória que o contexto estava usando. 
+    Em testes pequenos não faz tanta diferença, mas em pipelines grandes, 
+    se você não limpar os recursos, pode estourar a memória do servidor de CI.
+    */
   });
 
   // CENÁRIOS POSITIVOS (CRUD)
