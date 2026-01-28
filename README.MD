@@ -33,7 +33,8 @@ kit-qa-outsera/
 │   └── .env.prd
 ├── pages/               # Page Objects (Encapsulamento de elementos e ações)
 ├── tests/
-│   ├── api/             # Automação de API (Playwright + Faker)
+|   ├── accessibility/   # Testes de acessibilidade WACG (POC)
+│   ├── api/             # Testes de API e Contrato (Playwright + Faker + ZOD)
 │   ├── e2e/             # Testes de Ponta a Ponta (Cucumber)
 │   │   ├── features/    # Especificações de negócio (Gherkin)
 │   │   ├── steps/       # Implementação técnica dos passos (TypeScript)
