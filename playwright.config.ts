@@ -12,7 +12,9 @@ dotenv.config();
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
+  // Se tiver algum "test.only" no código, falha imediatamente no CI, para evitar que testes sejam esquecidos
+  forbidOnly: !!process.env.CI,//
+  // Retries: Se falhar, quantas vezes tenta de novo se rolar flakiness
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   

@@ -3,6 +3,10 @@ import { faker } from '@faker-js/faker';
 
 // Roda os testes de API em série para evitar conflitos de estado no CRUD
 test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos', () => {
+  /* Isso declara uma variável que vai guardar o "contexto" da conexão com a API.
+    É como se fosse o "Postman" aberto. 
+    Você cria ela aqui em cima pra poder usar a mesma conexão em todos os testes
+  */ 
   let apiContext: APIRequestContext;
   let createdPostId: number;
   
