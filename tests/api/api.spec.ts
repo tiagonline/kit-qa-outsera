@@ -1,6 +1,16 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 import { faker } from '@faker-js/faker';
+import { z } from 'zod';
 
+// Definindo o "Contrato" (Schema) da postagem
+const postSchema = z.object({
+  userId: z.number(),
+  id: z.number(),
+  title: z.string(),
+  body: z.string(),
+});
+
+// Roda os testes de API em série para evitar conflitos de estado no CRUD
 test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos', () => {
   let apiContext: APIRequestContext;
   let createdPostId: number;
@@ -16,7 +26,9 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
 
   test.beforeAll(async ({ playwright }) => {
     apiContext = await playwright.request.newContext({
-      baseURL: process.env.API_BASE_URL
+      baseURL: process.env.API_BASE_URL,
+      // Ignora verificação de SSL para rodar atrás de Proxy/VPN Corporativa
+      ignoreHTTPSErrors: true,
     });
   });
 
@@ -26,7 +38,7 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
 
   // CENÁRIOS POSITIVOS (CRUD)
 
-  test('POST /posts - Deve criar uma nova postagem com dados dinâmicos', async () => {
+  test('POST /posts - Deve criar uma nova postagem e validar o contrato (Schema)', async () => {
     const response = await apiContext.post('/posts', {
       data: {
         title: fakeTitle,
@@ -42,7 +54,17 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
     const responseBody = await response.json();
     console.log('ID Gerado:', responseBody.id);
 
-    expect(responseBody).toHaveProperty('id');
+    // --- VALIDAÇÃO DE CONTRATO COM ZOD ---
+    const validation = postSchema.safeParse(responseBody);
+    
+    // Se falhar aqui, o console vai mostrar exatamente qual campo veio errado
+    if (!validation.success) {
+      console.error("Erro de Contrato:", validation.error);
+    }
+    expect(validation.success).toBeTruthy();
+    // -------------------------------------
+
+    // Validações funcionais (valores específicos)
     expect(responseBody.title).toBe(fakeTitle);
     expect(responseBody.body).toBe(fakeBody);
     expect(responseBody.userId).toBe(fakeUserId);
@@ -50,7 +72,7 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
     createdPostId = responseBody.id;
   });
 
-  test('GET /posts/:id - Deve consultar a postagem criada', async () => {
+  test('GET /posts/:id - Deve consultar a postagem e validar o contrato', async () => {
     // Fallback para 1 caso o ID seja > 100 (limitação do JSONPlaceholder)
     const idToTest = (createdPostId > 100) ? 1 : createdPostId; 
 
@@ -58,6 +80,11 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
     expect(response.status()).toBe(200);
 
     const responseBody = await response.json();
+
+    // Reutilizando o schema para garantir que o GET também segue o contrato
+    const validation = postSchema.safeParse(responseBody);
+    expect(validation.success).toBeTruthy();
+
     expect(responseBody).toHaveProperty('id', idToTest);
   });
 
@@ -75,6 +102,11 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
 
     expect(response.status()).toBe(200);
     const responseBody = await response.json();
+    
+    // Validando contrato no PUT
+    const validation = postSchema.safeParse(responseBody);
+    expect(validation.success).toBeTruthy();
+
     expect(responseBody.title).toBe(updatedTitle);
     expect(responseBody.body).toBe(updatedBody);
   });
@@ -127,5 +159,4 @@ test.describe.serial('Testes de API - Fluxo CRUD Completo & Cenários Negativos'
         await authContext.dispose();
     });
   });
-
 });
