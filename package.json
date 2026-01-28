@@ -9,6 +9,7 @@
     "test:mobile": "dotenv -e envs/.env.dev -- npx playwright test tests/mobile --project='Mobile Chrome'",
     "test:extra": "dotenv -e envs/.env.dev -- npx playwright test tests/e2e/extra/checkout.native.spec.ts && npx playwright show-report",
     "test:all": "npm run test:api && npm run test:e2e && npm run test:mobile && npm run k6:run",
+    "test:a11y": "dotenv -e envs/.env.dev -- npx playwright test tests/accessibility",
     "report:api": "npx playwright show-report",
     "k6:up": "docker compose -f tests/k6-load/docker-compose.yml up -d",
     "k6:build": "webpack --config tests/k6-load/webpack.config.js",
@@ -34,6 +35,7 @@
   "author": "Tiago Silva",
   "license": "ISC",
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@babel/core": "^7.23.0",
     "@babel/preset-env": "^7.23.0",
     "@cucumber/cucumber": "^10.0.0",

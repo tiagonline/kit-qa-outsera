@@ -8,6 +8,7 @@
 ![K6](https://img.shields.io/badge/K6-Performance-purple?logo=k6&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker&logoColor=white)
 ![NodeJS](https://img.shields.io/badge/Node.js-18+-339933?logo=nodedotjs&logoColor=white)
+![Axe-core](https://img.shields.io/badge/Axe--core-A11y-orange?logo=accessibility&logoColor=white)
 
 ---
 
@@ -112,7 +113,7 @@ Nas execuções do **GitHub Actions**, estas variáveis foram configuradas como 
 
 > **Diferencial Técnico**: O pipeline foi otimizado para rodar os jobs em paralelos. Isso significa que os testes de API, E2E, Mobile e Performance rodam em máquinas independentes e simultâneas, garantindo escalabilidade e um feedback muito mais rápido para o time de desenvolvimento.
 
-## 3.3 Testes de Contrato (API)
+### 3.3 Testes de Contrato (API)
 
 Além das validações funcionais (Status Code e Regra de Negócio), este projeto implementa **Testes de Contrato baseados em Schema** utilizando a biblioteca **Zod**.
 
@@ -125,14 +126,15 @@ Além das validações funcionais (Status Code e Regra de Negócio), este projet
 
 ## 4. Como Executar os Testes
 
-| Cenário              | Comando                    |
-|----------------------|----------------------------|
-| Executar Tudo (CI)   | `npm run test:all`         |
-| Testes de API        | `npm run test:api`         |
-| Testes Web (BDD)     | `npm run test:e2e`         |
-| Testes Mobile        | `npm run test:mobile`      |
-| Teste de Performance | `npm run k6:run`           |
-| Modo Playwright      | `npx playwright test --ui` |
+| Cenário                 | Comando                    |
+|-------------------------|----------------------------|
+| Executar Tudo (CI)      | `npm run test:all`         |
+| Testes de API           | `npm run test:api`         |
+| Testes Web (BDD)        | `npm run test:e2e`         |
+| Testes Mobile           | `npm run test:mobile`      |
+| Teste de Performance    | `npm run k6:run`           |
+| Modo Playwright         | `npx playwright test --ui` |
+| Teste de Acessibilidade | `npm run test:a11y`        |
 
 ---
 
@@ -252,6 +254,28 @@ npm run test:api:hmg
 # Rodando apenas Smoke Tests em Produção
 npm run test:e2e:prd
 ```
+
+---
+
+## 10. Acessibilidade e Inclusão (POC)
+
+Como iniciativa de melhoria contínua e foco na experiência de **todos** os usuários, foi implementada uma Prova de Conceito (POC) de testes automatizados de acessibilidade.
+
+A solução utiliza a engine do **axe-core** integrada nativamente aos testes do Playwright, permitindo "auditorias" rápidas durante a execução da pipeline.
+
+### 10.1 Cobertura da Automação
+O teste varre o DOM da aplicação em busca de violações das diretrizes internacionais **WCAG 2.1 (Web Content Accessibility Guidelines)**, cobrindo:
+
+* ✅ Contraste de cores (Nível AA).
+* ✅ Hierarquia de cabeçalhos.
+* ✅ Rótulos de formulários (Labels).
+* ✅ Textos alternativos em imagens (Alt text).
+* ✅ Semântica ARIA.
+
+### 10.2 Benefícios para o Projeto
+* **Inclusão:** Garante que o produto seja utilizável por pessoas com deficiência.
+* **SEO:** Melhorias de acessibilidade impactam diretamente o rankeamento em motores de busca.
+* **Prevenção:** Detecta cerca de 50% dos erros mais comuns de acessibilidade antes de chegar em produção.
 
 ---
 
