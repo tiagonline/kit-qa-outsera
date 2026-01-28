@@ -112,6 +112,15 @@ Nas execuções do **GitHub Actions**, estas variáveis foram configuradas como 
 
 > **Diferencial Técnico**: O pipeline foi otimizado para rodar os jobs em paralelos. Isso significa que os testes de API, E2E, Mobile e Performance rodam em máquinas independentes e simultâneas, garantindo escalabilidade e um feedback muito mais rápido para o time de desenvolvimento.
 
+## 3.3 Testes de Contrato (API)
+
+Além das validações funcionais (Status Code e Regra de Negócio), este projeto implementa **Testes de Contrato baseados em Schema** utilizando a biblioteca **Zod**.
+
+- **Objetivo:** Garantir a integridade da interface de comunicação entre o Frontend e o Backend.
+- **Como funciona:** Cada resposta da API é validada contra um schema estrito.  
+  Se o backend alterar o tipo de um dado (ex: enviar `id` como `string` ao invés de `number`) ou remover um campo obrigatório, o teste falha imediatamente, mesmo que o status code seja `200`.
+- **Benefício:** Maior segurança em refatorações e detecção antecipada de quebras de contrato.
+
 ---
 
 ## 4. Como Executar os Testes
