@@ -1,6 +1,6 @@
 # Kit QA Outsera - Automação Full Stack
 
-> Projeto de automação de testes "End-to-End" simulando um ambiente real de produção. O projeto abrange testes de API, Interface Web (BDD), Mobile (Emulação) e Performance (Carga).
+> Projeto de automação de testes "End-to-End" simulando um ambiente real de produção. O projeto abrange testes de API e contrato, Interface Web (BDD), Mobile (Emulação), Acessibilidade(WCAG) e Performance (Carga).
 
 [![CI Status](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/workflow-pipeline.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/workflow-pipeline.yml)
 ![Playwright](https://img.shields.io/badge/Playwright-1.40+-green?logo=playwright&logoColor=white)
