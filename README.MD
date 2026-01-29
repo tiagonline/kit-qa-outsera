@@ -244,7 +244,7 @@ this.pageManager = new PageManager(this.page);
 
 await this.pageManager.login.login(user, pass);
 await this.pageManager.inventory.addItemToCart(produto);
-
+```
 
 ---
 
