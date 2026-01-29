@@ -1,41 +1,28 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { LoginPage } from '../../../pages/LoginPage.ts';
-import { InventoryPage } from '../../../pages/InventoryPage.ts';
-import { CartPage } from '../../../pages/CartPage.ts';
-import { CheckoutPage } from '../../../pages/CheckoutPage.ts';
+import { PageManager } from '../../../pages/PageManager';
 import { faker } from '@faker-js/faker';
 
-// Variáveis para compartilhar entre os steps
-let loginPage: LoginPage;
-let inventoryPage: InventoryPage;
-let cartPage: CartPage;
-let checkoutPage: CheckoutPage;
-
 Given('que estou logado', async function () {
-  loginPage = new LoginPage(this.page);
-  inventoryPage = new InventoryPage(this.page);
-  cartPage = new CartPage(this.page);
-  checkoutPage = new CheckoutPage(this.page);
-
-  await loginPage.goto();
-  await loginPage.login("standard_user", "secret_sauce");
+  this.pageManager = new PageManager(this.page);
+  await this.pageManager.login.goto();
+  await this.pageManager.login.login("standard_user", "secret_sauce");
 });
 
 When('adicionei o produto {string} ao carrinho', async function (produtoNome) {
-  await inventoryPage.addItemToCart(produtoNome);
+  await this.pageManager.inventory.addItemToCart(produtoNome);
 });
 
 When('acesso o carrinho', async function () {
-  await inventoryPage.goToCart();
+  await this.pageManager.inventory.goToCart();
 });
 
 When('prossigo para o checkout', async function () {
-  await cartPage.proceedToCheckout();
+  await this.pageManager.cart.proceedToCheckout();
 });
 
 When('preencho os dados de entrega corretamente', async function () {
-  await checkoutPage.fillInformation(
+  await this.pageManager.checkout.fillInformation(
     faker.person.firstName(),
     faker.person.lastName(),
     faker.location.zipCode()
@@ -43,19 +30,16 @@ When('preencho os dados de entrega corretamente', async function () {
 });
 
 When('finalizo a compra', async function () {
-  await checkoutPage.finishCheckout();
+  await this.pageManager.checkout.finishCheckout();
 });
 
 Then('devo ver a mensagem de confirmação {string}', async function (mensagem) {
-  await checkoutPage.validateOrderComplete();
+  await this.pageManager.checkout.validateOrderComplete();
   const header = this.page.locator('.complete-header');
   await expect(header).toContainText(mensagem);
 });
 
-// Steps para o Cenário Negativo (Tarefa 2)
-
 When('tento continuar sem preencher o formulário', async function () {
-  // Clica em continue sem preencher nada
   await this.page.locator('[data-test="continue"]').click();
 });
 
