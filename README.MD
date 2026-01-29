@@ -2,6 +2,7 @@
 
 > Projeto de automação de testes "End-to-End" simulando um ambiente real de produção. O projeto abrange testes de API e contrato, Interface Web (BDD), Mobile (Emulação), Acessibilidade(WCAG) e Performance (Carga).
 
+[![Relatório Allure](https://img.shields.io/badge/Allure_Report-Visualizar-orange?logo=allure&logoColor=white)](https://tiagonline.github.io/kit-qa-outsera/)
 [![CI Status](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/workflow-pipeline.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/workflow-pipeline.yml)
 ![Playwright](https://img.shields.io/badge/Playwright-1.40+-green?logo=playwright&logoColor=white)
 ![Cucumber](https://img.shields.io/badge/Cucumber-BDD-23d160?logo=cucumber&logoColor=white)
