@@ -1,0 +1,22 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"Como um cliente do e-commerce
+  Quero acessar minha conta
+  Para realizar compras de produtos geek","3323","Tentativa de login com falha (Fluxos Negativos)","","Thu Jan 29 16:07:52 UTC 2026","passed","Thu Jan 29 16:07:56 UTC 2026","","","",""
+"Como um cliente do e-commerce
+  Quero acessar minha conta
+  Para realizar compras de produtos geek","353","Login com sucesso (Fluxo Positivo)","","Thu Jan 29 16:07:45 UTC 2026","passed","Thu Jan 29 16:07:46 UTC 2026","","","",""
+"Como um cliente do e-commerce
+  Quero acessar minha conta
+  Para realizar compras de produtos geek","3343","Tentativa de login com falha (Fluxos Negativos)","","Thu Jan 29 16:07:46 UTC 2026","passed","Thu Jan 29 16:07:49 UTC 2026","","","",""
+"Como um cliente do e-commerce
+  Quero acessar minha conta
+  Para realizar compras de produtos geek","3335","Tentativa de login com falha (Fluxos Negativos)","","Thu Jan 29 16:07:49 UTC 2026","passed","Thu Jan 29 16:07:52 UTC 2026","","","",""
+"Como um usuário logado
+  Quero finalizar a compra de itens do carrinho
+  Para receber os produtos em minha casa","508","Tentar finalizar compra sem dados de entrega (Fluxo Negativo)","","Thu Jan 29 16:07:44 UTC 2026","passed","Thu Jan 29 16:07:45 UTC 2026","","","",""
+"Como um cliente
+  Quero favoritar produtos
+  Para comprar mais tarde","393","Adicionar produto aos favoritos (Reuso de Login)","","Thu Jan 29 16:07:45 UTC 2026","passed","Thu Jan 29 16:07:45 UTC 2026","","","",""
+"Como um usuário logado
+  Quero finalizar a compra de itens do carrinho
+  Para receber os produtos em minha casa","728","Compra realizada com sucesso (Fluxo Positivo)","","Thu Jan 29 16:07:44 UTC 2026","passed","Thu Jan 29 16:07:44 UTC 2026","","","",""
