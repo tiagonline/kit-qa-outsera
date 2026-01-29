@@ -60,3 +60,13 @@ get-docker.sh
 # ----------------------
 .vscode/
 .idea/
+# --- Allure Reports & Artifacts ---
+allure-results/
+allure-report/
+cucumber-report.html
+
+# --- Playwright Artifacts ---
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

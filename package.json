@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "npx playwright install --with-deps",
     "test:api": "dotenv -e envs/.env.dev -- npx playwright test tests/api",
-    "test:e2e": "dotenv -e envs/.env.dev -- npx cucumber-js",
+    "test:e2e": "rm -rf allure-results && dotenv -e envs/.env.dev -- npx cucumber-js",
     "test:mobile": "dotenv -e envs/.env.dev -- npx playwright test tests/mobile --project='Mobile Chrome'",
     "test:extra": "dotenv -e envs/.env.dev -- npx playwright test tests/e2e/extra/checkout.native.spec.ts && npx playwright show-report",
     "test:all": "npm run test:api && npm run test:e2e && npm run test:mobile && npm run k6:run",
@@ -20,7 +20,10 @@
     "ci": "npm run format && npm run lint && npm run test:all",
     "test:api:dev": "dotenv -e envs/.env.dev -- npx playwright test tests/api",
     "test:api:hmg": "dotenv -e envs/.env.hmg -- npx playwright test tests/api",
-    "test:e2e:prd": "dotenv -e envs/.env.prd -- npx cucumber-js --tags '@smoke'"
+    "test:e2e:prd": "dotenv -e envs/.env.prd -- npx cucumber-js --tags '@smoke'",
+    "report:generate": "allure generate allure-results --clean -o allure-report",
+    "report:open": "allure open allure-report",
+    "test:report": "npm run test:e2e ; npm run report:generate && npm run report:open"
   },
   "keywords": [
     "playwright",
@@ -44,6 +47,8 @@
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
+    "allure-commandline": "^2.36.0",
+    "allure-cucumberjs": "^3.4.5",
     "babel-loader": "^9.1.3",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
