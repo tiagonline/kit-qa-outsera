@@ -50,7 +50,7 @@
   "graphTooltip": 2,
   "hideControls": false,
   "id": null,
-  "uid": "outsera-load-test",
+  "uid": "fullstack-load-test",
   "links": [],
   "refresh": "5s",
   "rows": [

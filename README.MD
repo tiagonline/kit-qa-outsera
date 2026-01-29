@@ -1,9 +1,9 @@
-# Kit QA Outsera - Automação Full Stack
+# Kit QA Fullstack - Automação Full Stack
 
 > Projeto de automação de testes "End-to-End" simulando um ambiente real de produção. O projeto abrange testes de API e contrato, Interface Web (BDD), Mobile (Emulação), Acessibilidade(WCAG) e Performance (Carga).
 
-[![Relatório Allure](https://img.shields.io/badge/Allure_Report-Visualizar-orange?logo=allure&logoColor=white)](https://tiagonline.github.io/kit-qa-outsera/)
-[![CI Status](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/workflow-pipeline.yml/badge.svg)](https://github.com/tiagonline/kit-qa-outsera/actions/workflows/workflow-pipeline.yml)
+[![Relatório Allure](https://img.shields.io/badge/Allure_Report-Visualizar-orange?logo=allure&logoColor=white)](https://tiagonline.github.io/kit-qa-fullstack/)
+[![CI Status](https://github.com/tiagonline/kit-qa-fullstack/actions/workflows/workflow-pipeline.yml/badge.svg)](https://github.com/tiagonline/kit-qa-fullstack/actions/workflows/workflow-pipeline.yml)
 ![Playwright](https://img.shields.io/badge/Playwright-1.40+-green?logo=playwright&logoColor=white)
 ![Cucumber](https://img.shields.io/badge/Cucumber-BDD-23d160?logo=cucumber&logoColor=white)
 ![K6](https://img.shields.io/badge/K6-Performance-purple?logo=k6&logoColor=white)
@@ -26,7 +26,7 @@ O projeto utiliza uma arquitetura modular baseada em **TypeScript**, focada em e
 
 ### 1.2 Estrutura de Pastas
 ```text
-kit-qa-outsera/
+kit-qa-fullstack/
 ├── .github/workflows/   # Pipeline de CI/CD (GitHub Actions)
 ├── envs/                # Distinção da execução dos testes por ambientes
 │   ├── .env.dev
@@ -66,8 +66,8 @@ sudo usermod -aG docker $USER && newgrp docker
 
 #### 2.1.1 Clonar o repositório:
 ```bash
-git clone https://github.com/tiagonline/kit-qa-outsera.git
-cd kit-qa-outsera
+git clone https://github.com/tiagonline/kit-qa-fullstack.git
+cd kit-qa-fullstack
 ```
 
 #### 2.1.2 Instalar dependências:
@@ -158,7 +158,7 @@ Após rodar os testes na sua máquina, os relatórios podem ser encontrados nos 
   - Local: `cucumber-report.html` (abrir diretamente no navegador)
 
 - **Performance (k6):**  
-  - Local: `k6-summary.json` (resumo técnico) ou veja a execução em tempo real no [Grafana](http://localhost:3000/d/outsera-load-test) enquanto estiver executando. Configurei para abrir o dash automaticamente quando for executado.
+  - Local: `k6-summary.json` (resumo técnico) ou veja a execução em tempo real no [Grafana](http://localhost:3000/d/fullstack-load-test) enquanto estiver executando. Configurei para abrir o dash automaticamente quando for executado.
 
 ---
 

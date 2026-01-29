@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 module.exports = {
   mode: "production",
   entry: {
-    outsera: path.resolve(__dirname, "./src/simulations/loadPerformanceOutsera.test.js"),
+    fullstack: path.resolve(__dirname, "./src/simulations/loadPerformanceFullstack.test.js"),
   },
   output: {
     path: path.resolve(__dirname, "dist"),
