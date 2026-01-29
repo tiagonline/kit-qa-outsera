@@ -222,6 +222,30 @@ Este projeto foi desenvolvido seguindo padrões de mercado para **produção**:
 - **Observabilidade:** Monitorização de performance com dashboards profissionais com **Grafana**.  
 - **Segurança:** Uso de **Secrets** para gestão de tokens e dados sensíveis.
 
+### 7.1 Padrões de Projeto & Arquitetura
+
+Neste projeto, implementei o padrão **Page Object Model (POM)** com uma camada adicional de abstração: o **Page Object Manager**.
+
+#### Page Manager
+
+Para evitar a poluição dos arquivos de `steps` com múltiplas instâncias de classes e garantir uma gestão eficiente de memória, centralizamos a criação das páginas na classe `PageManager.ts`.
+
+#### Principais benefícios:
+
+- **Lazy Initialization:** As páginas só são instanciadas no momento em que são realmente necessárias (uso do operador `??`).
+- **Singleton Context:** Garante que cada cenário use apenas uma instância de cada página durante seu ciclo de vida.
+- **Clean Steps:** Os arquivos de definição de passos (steps) ficam muito mais limpos, interagindo apenas com o Manager em vez de conhecer todas as classes do projeto.
+
+#### Exemplo de uso nos steps:
+
+```ts
+// Em vez de instanciar cada página manualmente, usamos apenas o Manager
+this.pageManager = new PageManager(this.page);
+
+await this.pageManager.login.login(user, pass);
+await this.pageManager.inventory.addItemToCart(produto);
+
+
 ---
 
 ## 8. Decisões de Produção
